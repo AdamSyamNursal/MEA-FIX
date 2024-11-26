@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:mea/view/all/register.dart';
+import 'package:mea/view/all/profile.dart'; // Import halaman profile
 
 class Login extends StatefulWidget {
   @override
@@ -7,19 +10,68 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   bool _obscureText = true;
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<void> _loginUser() async {
+    final username = _usernameController.text.trim();
+    final password = _passwordController.text.trim();
+
+    try {
+      // Cari data pengguna di Firestore berdasarkan username dan password
+      final querySnapshot = await _firestore
+          .collection('users')
+          .where('username', isEqualTo: username)
+          .where('password', isEqualTo: password)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        // Jika data ditemukan, navigasi ke halaman Profile
+        final userData = querySnapshot.docs.first.data();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProfilePage(userData: userData),
+          ),
+        );
+      } else {
+        _showMessage('Username atau password salah.');
+      }
+    } catch (e) {
+      _showMessage('Terjadi kesalahan: ${e.toString()}');
+    }
+  }
+
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Color(0xFFFF6F00),
-        body: Container(
-          child: Column(
-            children: [
-              SizedBox(height: 56),
-              Container(
-                child: Center(
-                  child: Text(
+        body: Column(
+          children: [
+            // Header
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              height: 56,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Icon(
+                      Icons.keyboard_backspace_rounded,
+                      color: Colors.white,
+                      size: 27,
+                    ),
+                  ),
+                  Text(
                     "Login",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -27,108 +79,122 @@ class _LoginState extends State<Login> {
                       fontSize: 20,
                     ),
                   ),
-                ),
+                  SizedBox(width: 27),
+                ],
               ),
-              SizedBox(height: 10),
-              Expanded(
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        SizedBox(height: 20),
-                        Container(
-                          height: 233,
-                          width: 294,
-                          child: Center(
-                            child: Image.asset(
-                              'assets/images/loginimage.png',
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        Container(
-                          height: 49,
-                          width: 349,
-                          child: TextField(
-                            decoration: InputDecoration(
-                              hintText: "Nama/Username",
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              filled: true,
-                              fillColor: Colors.grey[200],
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        Container(
-                          height: 49,
-                          width: 349,
-                          child: TextField(
-                            obscureText: _obscureText,
-                            decoration: InputDecoration(
-                              hintText: "Password",
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              filled: true,
-                              fillColor: Colors.grey[200],
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _obscureText
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _obscureText = !_obscureText;
-                                  });
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 30),
-                        ElevatedButton(
-                          onPressed: () {
-                            // Aksi untuk tombol Masuk
-                          },
-                          child: Text("Masuk", style: TextStyle(color: Colors.white),),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFFFF6F00),
-                            minimumSize: Size(349, 49),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        OutlinedButton(
-                          onPressed: () {
-                            // Aksi untuk tombol Daftar
-                          },
-                          child: Text("Daftar", style:  TextStyle(color: Colors.orange),),
-                          style: OutlinedButton.styleFrom(
-                            minimumSize: Size(349, 49),
-                            side: BorderSide(color: Color(0xFFFF6F00)),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                      ],
-                    ),
+            ),
+
+            // White Container
+            Expanded(
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(20),
                   ),
                 ),
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      // Login Image
+                      SizedBox(
+                        height: 200,
+                        width: 200,
+                        child: Image.asset(
+                          'assets/images/loginimage.png',
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                      SizedBox(height: 20),
+
+                      // Username Field
+                      TextField(
+                        controller: _usernameController,
+                        decoration: InputDecoration(
+                          hintText: "Nama/Username",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          filled: true,
+                          fillColor: Colors.grey[200],
+                        ),
+                      ),
+                      SizedBox(height: 20),
+
+                      // Password Field
+                      TextField(
+                        controller: _passwordController,
+                        obscureText: _obscureText,
+                        decoration: InputDecoration(
+                          hintText: "Password",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          filled: true,
+                          fillColor: Colors.grey[200],
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscureText
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _obscureText = !_obscureText;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 30),
+
+                      // Login Button
+                      ElevatedButton(
+                        onPressed: _loginUser,
+                        child: Text(
+                          "Masuk",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFFFF6F00),
+                          minimumSize: Size(300, 45),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+
+                      // Register Button
+                      OutlinedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Register(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          "Daftar",
+                          style: TextStyle(color: Colors.orange),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          minimumSize: Size(300, 45),
+                          side: BorderSide(color: Color(0xFFFF6F00)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

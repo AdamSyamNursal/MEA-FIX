@@ -28,19 +28,19 @@ class FloatingNavbar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             IconButton(
-              icon: Icon(Icons.home),
+              icon: Icon(Icons.home,color: Colors.white,),
               onPressed: () => onTap(0), // Aksi untuk Home
             ),
             IconButton(
-              icon: Icon(Icons.add_circle),
+              icon: Icon(Icons.add_circle,color: Colors.white),
               onPressed: () => onTap(1), // Aksi untuk Tambah
             ),
             IconButton(
-              icon: Icon(Icons.message),
+              icon: Icon(Icons.message,color: Colors.white),
               onPressed: () => onTap(2), // Aksi untuk Pesan
             ),
             IconButton(
-              icon: Icon(Icons.person),
+              icon: Icon(Icons.person,color: Colors.white),
               onPressed: () => onTap(3), // Aksi untuk Profile
             ),
           ],

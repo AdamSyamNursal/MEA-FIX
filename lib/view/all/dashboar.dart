@@ -4,6 +4,7 @@ import 'package:mea/controller/appbar/lokasi.dart';
 import 'package:mea/controller/level.dart';
 import 'package:mea/controller/list/listlaporan.dart';
 import 'package:mea/view/all/laporan_aktivitas.dart';
+import 'package:mea/view/all/login.dart';
 import 'package:mea/view/all/pesan.dart';
 import 'package:mea/view/all/profile.dart';
 import 'package:mea/view/all/tambahlaporan.dart'; // Import halaman TambahLaporan
@@ -143,7 +144,7 @@ class dashboard extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ProfilePage(),
+                        builder: (context) => Login(),
                       ),
                     );
                     break;

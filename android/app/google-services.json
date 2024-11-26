@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "736869811755",
+    "project_id": "marapiapp",
+    "storage_bucket": "marapiapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:736869811755:android:9366aef20595d507ed0c6e",
+        "android_client_info": {
+          "package_name": "app.marapiapp.com"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVxr1xq4cAMIoKC_BtG6HFrLHFxR0AV0Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

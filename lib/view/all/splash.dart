@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart'; // Tambahkan GetX
 import 'package:mea/view/all/dashboar.dart'; // Pastikan ini mengarah ke halaman dashboard
 
 class SplashScreen extends StatelessWidget {
@@ -9,11 +10,8 @@ class SplashScreen extends StatelessWidget {
         backgroundColor: Color(0xFFFF6F00),
         body: GestureDetector(
           onTap: () {
-            // Navigasi ke halaman dashboard
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => dashboard()),
-            );
+            // Navigasi ke halaman dashboard menggunakan GetX
+            Get.to(() => dashboard());
           },
           child: Center(
             child: Container(

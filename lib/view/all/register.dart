@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:mea/model/modeluser.dart';
+import 'package:mea/view/all/login.dart'; // Pastikan path benar
 
 class Register extends StatefulWidget {
   @override
@@ -6,30 +9,81 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  bool _obscurePassword = true;
-  bool _obscureConfirmPassword = true;
+  final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+  final _phoneNumberController = TextEditingController();
+  final _addressController = TextEditingController();
+  final _dateOfBirthController = TextEditingController();
+
+  String _selectedRole = 'Relawan'; // Default role
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<void> _registerUser() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    try {
+      // Extract form values
+      final name = _nameController.text.trim();
+      final username = _usernameController.text.trim();
+      final email = _emailController.text.trim();
+      final password = _passwordController.text;
+      final phoneNumber = _phoneNumberController.text.trim();
+      final address = _addressController.text.trim();
+      final dateOfBirth = _dateOfBirthController.text.trim();
+      final role = _selectedRole;
+
+      // Save user data to Firestore
+      final user = UserModel(
+        name: name,
+        username: username,
+        email: email,
+        password: password,
+        role: role,
+        phoneNumber: phoneNumber,
+        address: address,
+        dateOfBirth: dateOfBirth,
+        registrationDate: DateTime.now().toIso8601String(),
+      );
+
+      await _firestore.collection('users').add(user.toJson());
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Registrasi berhasil!")),
+      );
+
+      // Navigate back to Login screen
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => Login()),
+        (route) => false, // Remove all previous routes
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: ${e.toString()}")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Color(0xFFFF6F00),
-        body: Container(
+    return Scaffold(
+      backgroundColor: Color(0xFFFF6F00),
+      body: SafeArea(
+        child: SingleChildScrollView(
           child: Column(
             children: [
-              // AppBar Custom dengan Tombol Back
+              // Header
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding: const EdgeInsets.all(16.0),
                 child: Row(
                   children: [
-                    SizedBox(
-                      height: 10,
-                    ),
                     IconButton(
                       icon: Icon(Icons.arrow_back, color: Colors.white),
-                      onPressed: () {
-                        Navigator.pop(context); // Aksi kembali ke halaman sebelumnya
-                      },
+                      onPressed: () => Navigator.pop(context),
                     ),
                     Expanded(
                       child: Center(
@@ -38,168 +92,237 @@ class _RegisterState extends State<Register> {
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
-                            fontSize: 20,
+                            fontSize: 24,
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(width: 48), // Untuk keseimbangan visual
                   ],
                 ),
               ),
-              SizedBox(height: 10),
+
+              // Form Container
               Container(
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        SizedBox(height: 20),
-                        Container(
-                          height: 233,
-                          width: 294,
-                          child: Center(
-                            child: Image.asset(
-                              'assets/images/loginimage.png',
-                            ),
-                          ),
+                width: double.infinity,
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                ),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Title
+                      Text(
+                        "Buat Akun Baru",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          color: Color(0xFFFF6F00),
                         ),
-                        SizedBox(height: 20),
-                        // Nama/Username Field
-                        Container(
-                          height: 49,
-                          width: 349,
-                          child: TextField(
-                            decoration: InputDecoration(
-                              hintText: "Nama/Username",
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
+                      ),
+                      SizedBox(height: 20),
+
+                      // Name Field
+                      _buildInputField(
+                        controller: _nameController,
+                        label: "Nama Lengkap",
+                        hint: "Masukkan nama lengkap Anda",
+                        validator: (value) =>
+                            value!.isEmpty ? "Nama wajib diisi." : null,
+                      ),
+
+                      // Username Field
+                      _buildInputField(
+                        controller: _usernameController,
+                        label: "Username",
+                        hint: "Masukkan username Anda",
+                        validator: (value) =>
+                            value!.isEmpty ? "Username wajib diisi." : null,
+                      ),
+
+                      // Email Field
+                      _buildInputField(
+                        controller: _emailController,
+                        label: "Email",
+                        hint: "Masukkan email Anda",
+                        validator: (value) {
+                          if (value!.isEmpty) return "Email wajib diisi.";
+                          if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value))
+                            return "Format email tidak valid.";
+                          return null;
+                        },
+                      ),
+
+                      // Password Field
+                      _buildInputField(
+                        controller: _passwordController,
+                        label: "Password",
+                        hint: "Masukkan password",
+                        obscureText: true,
+                        validator: (value) =>
+                            value!.isEmpty ? "Password wajib diisi." : null,
+                      ),
+
+                      // Confirm Password Field
+                      _buildInputField(
+                        controller: _confirmPasswordController,
+                        label: "Konfirmasi Password",
+                        hint: "Masukkan password yang sama",
+                        obscureText: true,
+                        validator: (value) {
+                          if (value!.isEmpty) return "Konfirmasi password wajib diisi.";
+                          if (value != _passwordController.text)
+                            return "Password tidak cocok.";
+                          return null;
+                        },
+                      ),
+
+                      // Phone Number Field
+                      _buildInputField(
+                        controller: _phoneNumberController,
+                        label: "Nomor Telepon",
+                        hint: "Masukkan nomor telepon Anda",
+                        keyboardType: TextInputType.phone,
+                        validator: (value) =>
+                            value!.isEmpty ? "Nomor telepon wajib diisi." : null,
+                      ),
+
+                      // Address Field
+                      _buildInputField(
+                        controller: _addressController,
+                        label: "Alamat",
+                        hint: "Masukkan alamat Anda",
+                        validator: (value) =>
+                            value!.isEmpty ? "Alamat wajib diisi." : null,
+                      ),
+
+                      // Date of Birth Field
+                      _buildInputField(
+                        controller: _dateOfBirthController,
+                        label: "Tanggal Lahir",
+                        hint: "Masukkan tanggal lahir Anda (dd-mm-yyyy)",
+                        keyboardType: TextInputType.datetime,
+                        validator: (value) =>
+                            value!.isEmpty ? "Tanggal lahir wajib diisi." : null,
+                      ),
+
+                      // Role Dropdown
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Role",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                                color: Color(0xFFFF6F00),
                               ),
-                              filled: true,
-                              fillColor: Colors.grey[200],
                             ),
-                          ),
-                        ),
-                        SizedBox(height: 15),
-                        // Nomor Telepon Field
-                        Container(
-                          height: 49,
-                          width: 349,
-                          child: TextField(
-                            keyboardType: TextInputType.phone,
-                            decoration: InputDecoration(
-                              hintText: "Nomor Telepon",
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              filled: true,
-                              fillColor: Colors.grey[200],
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 15),
-                        // Alamat Field
-                        Container(
-                          height: 49,
-                          width: 349,
-                          child: TextField(
-                            decoration: InputDecoration(
-                              hintText: "Alamat",
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              filled: true,
-                              fillColor: Colors.grey[200],
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 15),
-                        // Password Field
-                        Container(
-                          height: 49,
-                          width: 349,
-                          child: TextField(
-                            obscureText: _obscurePassword,
-                            decoration: InputDecoration(
-                              hintText: "Password",
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              filled: true,
-                              fillColor: Colors.grey[200],
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _obscurePassword
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
+                            SizedBox(height: 5),
+                            DropdownButtonFormField<String>(
+                              value: _selectedRole,
+                              items: ['Relawan', 'BPBD']
+                                  .map((role) => DropdownMenuItem(
+                                        value: role,
+                                        child: Text(role),
+                                      ))
+                                  .toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  _selectedRole = value!;
+                                });
+                              },
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: Colors.grey[200],
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
-                                onPressed: () {
-                                  setState(() {
-                                    _obscurePassword = !_obscurePassword;
-                                  });
-                                },
                               ),
+                              validator: (value) =>
+                                  value == null || value.isEmpty
+                                      ? "Role wajib dipilih."
+                                      : null,
                             ),
-                          ),
+                          ],
                         ),
-                        SizedBox(height: 15),
-                        // Konfirmasi Password Field
-                        Container(
-                          height: 49,
-                          width: 349,
-                          child: TextField(
-                            obscureText: _obscureConfirmPassword,
-                            decoration: InputDecoration(
-                              hintText: "Konfirmasi Password",
-                              border: OutlineInputBorder(
+                      ),
+
+                      SizedBox(height: 30),
+
+                      // Register Button
+                      Center(
+                        child: SizedBox(
+                          width: 300,
+                          child: ElevatedButton(
+                            onPressed: _registerUser,
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(vertical: 15),
+                              backgroundColor: Color(0xFFFF6F00),
+                              shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              filled: true,
-                              fillColor: Colors.grey[200],
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _obscureConfirmPassword
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _obscureConfirmPassword =
-                                        !_obscureConfirmPassword;
-                                  });
-                                },
-                              ),
+                            ),
+                            child: Text(
+                              "Daftar",
+                              style: TextStyle(fontSize: 16, color: Colors.white),
                             ),
                           ),
                         ),
-                        SizedBox(height: 30),
-                        // Button Daftar
-                        ElevatedButton(
-                          onPressed: () {
-                            // Aksi untuk tombol Daftar
-                          },
-                          child: Text("Daftar", style: TextStyle(color: Colors.white),),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFFFF6F00),
-                            minimumSize: Size(349, 49),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildInputField({
+    required TextEditingController controller,
+    required String label,
+    required String hint,
+    TextInputType keyboardType = TextInputType.text,
+    bool obscureText = false,
+    String? Function(String?)? validator,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+              color: Color(0xFFFF6F00),
+            ),
+          ),
+          SizedBox(height: 5),
+          TextFormField(
+            controller: controller,
+            keyboardType: keyboardType,
+            obscureText: obscureText,
+            validator: validator,
+            decoration: InputDecoration(
+              hintText: hint,
+              filled: true,
+              fillColor: Colors.grey[200],
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
