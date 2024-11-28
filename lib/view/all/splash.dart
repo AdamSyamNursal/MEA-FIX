@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart'; // Tambahkan GetX
+import 'package:get/get.dart';
 import 'package:mea/view/all/dashboar.dart'; // Pastikan ini mengarah ke halaman dashboard
 
 class SplashScreen extends StatelessWidget {

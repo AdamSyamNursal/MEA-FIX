@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mea/controller/appbar/burger/burger.dart';
 import 'package:mea/controller/appbar/lokasi.dart';
+import 'package:mea/controller/auth/auth_controller.dart';
 import 'package:mea/controller/level.dart';
 import 'package:mea/controller/list/listlaporan.dart';
 import 'package:mea/view/all/laporan_aktivitas.dart';
@@ -42,7 +44,7 @@ class dashboard extends StatelessWidget {
                     ),
                     child: SingleChildScrollView(
                       child: Padding(
-                        padding: const EdgeInsets.only(bottom: 80.0), // Menambah padding bawah
+                        padding: const EdgeInsets.only(bottom: 80.0),
                         child: Column(
                           children: [
                             SizedBox(height: 10),
@@ -78,13 +80,7 @@ class dashboard extends StatelessWidget {
                                     ),
                                     child: GestureDetector(
                                       onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                LaporanAktivitas(),
-                                          ),
-                                        );
+                                        Get.to(() => LaporanAktivitas());
                                       },
                                       child: Row(
                                         mainAxisAlignment:
@@ -117,37 +113,24 @@ class dashboard extends StatelessWidget {
               onTap: (index) {
                 switch (index) {
                   case 0:
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => dashboard(),
-                      ),
-                    );
+                    Get.to(() => dashboard());
                     break;
                   case 1:
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => TambahLaporan(),
-                      ),
-                    );
+                    Get.to(() => TambahLaporan());
                     break;
                   case 2:
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Pesan(),
-                      ),
-                    );
+                    Get.to(() => Pesan());
                     break;
-                  case 3:
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Login(),
-                      ),
-                    );
-                    break;
+case 3:
+  final authController = Get.find<AuthController>();
+  if (authController.isLoggedIn.value) {
+    // Jika sudah login, navigasi ke halaman profil
+    Get.to(() => ProfilePage(userData: authController.userData.value));
+  } else {
+    // Jika belum login, navigasi ke halaman login
+    Get.to(() => Login());
+  }
+  break;
                 }
               },
             ),

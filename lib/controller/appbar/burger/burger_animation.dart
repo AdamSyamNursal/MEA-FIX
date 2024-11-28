@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mea/controller/appbar/burger/container_burger.dart';
 
 class Sidebar extends StatelessWidget {
@@ -26,7 +27,7 @@ class Sidebar extends StatelessWidget {
               onTap: () async {
                 onClose(); // Menutup sidebar
                 await Future.delayed(Duration(milliseconds: 300)); // Tunggu animasi selesai
-                Navigator.pushNamed(context, '/tentangaplikasi');
+                Get.toNamed('/tentang'); // Navigasi dengan GetX
               },
             ),
             ContainerBurger(
@@ -34,7 +35,7 @@ class Sidebar extends StatelessWidget {
               onTap: () async {
                 onClose();
                 await Future.delayed(Duration(milliseconds: 300));
-                Navigator.pushNamed(context, '/hubungi');
+                Get.toNamed('/hubungi');
               },
             ),
             ContainerBurger(
@@ -42,7 +43,7 @@ class Sidebar extends StatelessWidget {
               onTap: () async {
                 onClose();
                 await Future.delayed(Duration(milliseconds: 300));
-                Navigator.pushNamed(context, '/arsip');
+                Get.toNamed('/arsip');
               },
             ),
             SizedBox(height: 10),

@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:mea/controller/auth/auth_controller.dart';
 import 'package:mea/view/all/dashboar.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -23,12 +25,7 @@ class ProfilePage extends StatelessWidget {
                 children: [
                   GestureDetector(
 onTap: () {
-  Navigator.pushReplacement(
-    context,
-    MaterialPageRoute(
-      builder: (context) => dashboard(), // Ganti ke halaman Dasbor
-    ),
-  );
+Get.to(() => dashboard());
 },
 
                     child: Container(
@@ -80,19 +77,21 @@ onTap: () {
                       SizedBox(height: 20),
                       Container(
                         width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context); // Aksi untuk logout
-                          },
-                          child: Text(
-                            "Logout",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFFFF6F00),
-                            padding: EdgeInsets.symmetric(vertical: 16),
-                          ),
-                        ),
+child: ElevatedButton(
+  onPressed: () {
+    final authController = Get.find<AuthController>(); // Ambil instance AuthController
+    authController.logoutUser(); // Panggil fungsi logout
+  },
+  child: Text(
+    "Logout",
+    style: TextStyle(color: Colors.white),
+  ),
+  style: ElevatedButton.styleFrom(
+    backgroundColor: Color(0xFFFF6F00),
+    padding: EdgeInsets.symmetric(vertical: 16),
+  ),
+),
+
                       ),
                     ],
                   ),

@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:mea/controller/auth/auth_controller.dart';
+import 'package:mea/view/all/dashboar.dart';
 import 'package:mea/view/all/register.dart';
-import 'package:mea/view/all/profile.dart'; // Import halaman profile
+import 'package:mea/view/all/profile.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -9,6 +12,7 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  final authController = Get.put(AuthController()); // Inisialisasi AuthController
   bool _obscureText = true;
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -17,6 +21,11 @@ class _LoginState extends State<Login> {
   Future<void> _loginUser() async {
     final username = _usernameController.text.trim();
     final password = _passwordController.text.trim();
+
+    if (username.isEmpty || password.isEmpty) {
+      _showMessage('Username dan password tidak boleh kosong.');
+      return;
+    }
 
     try {
       // Cari data pengguna di Firestore berdasarkan username dan password
@@ -27,14 +36,9 @@ class _LoginState extends State<Login> {
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
-        // Jika data ditemukan, navigasi ke halaman Profile
         final userData = querySnapshot.docs.first.data();
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ProfilePage(userData: userData),
-          ),
-        );
+        // Gunakan AuthController untuk menyimpan status login
+        await authController.loginUser(userData);
       } else {
         _showMessage('Username atau password salah.');
       }
@@ -63,7 +67,7 @@ class _LoginState extends State<Login> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      Navigator.pop(context);
+                      Get.to(() => dashboard()); // Menggunakan GetX untuk navigasi
                     },
                     child: Icon(
                       Icons.keyboard_backspace_rounded,
@@ -170,12 +174,7 @@ class _LoginState extends State<Login> {
                       // Register Button
                       OutlinedButton(
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Register(),
-                            ),
-                          );
+                          Get.to(() => Register()); // Navigasi ke halaman register
                         },
                         child: Text(
                           "Daftar",

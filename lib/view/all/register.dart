@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mea/model/modeluser.dart';
 import 'package:mea/view/all/login.dart'; // Pastikan path benar
 
@@ -51,19 +52,25 @@ class _RegisterState extends State<Register> {
 
       await _firestore.collection('users').add(user.toJson());
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Registrasi berhasil!")),
+      // Notifikasi sukses menggunakan Get.snackbar
+      Get.snackbar(
+        "Sukses",
+        "Registrasi berhasil!",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
       );
 
-      // Navigate back to Login screen
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => Login()),
-        (route) => false, // Remove all previous routes
-      );
+      // Navigasi ke Login menggunakan GetX
+      Get.offAll(() => Login());
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: ${e.toString()}")),
+      // Notifikasi error menggunakan Get.snackbar
+      Get.snackbar(
+        "Error",
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
       );
     }
   }
@@ -83,7 +90,7 @@ class _RegisterState extends State<Register> {
                   children: [
                     IconButton(
                       icon: Icon(Icons.arrow_back, color: Colors.white),
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () => Get.back(), // Mengganti Navigator.pop
                     ),
                     Expanded(
                       child: Center(
@@ -173,7 +180,8 @@ class _RegisterState extends State<Register> {
                         hint: "Masukkan password yang sama",
                         obscureText: true,
                         validator: (value) {
-                          if (value!.isEmpty) return "Konfirmasi password wajib diisi.";
+                          if (value!.isEmpty)
+                            return "Konfirmasi password wajib diisi.";
                           if (value != _passwordController.text)
                             return "Password tidak cocok.";
                           return null;
