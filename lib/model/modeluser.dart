@@ -1,4 +1,5 @@
 class UserModel {
+  final String id;
   final String name;
   final String username;
   final String email;
@@ -10,6 +11,7 @@ class UserModel {
   final String registrationDate;
 
   UserModel({
+    required this.id,
     required this.name,
     required this.username,
     required this.email,
@@ -24,6 +26,7 @@ class UserModel {
   // Mapping dari JSON
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
+      id: json['id'] ?? '',
       name: json['name'] ?? '',
       username: json['username'] ?? '',
       email: json['email'] ?? '',
@@ -39,6 +42,7 @@ class UserModel {
   // Mapping ke JSON
   Map<String, dynamic> toJson() {
     return {
+      'id' : id,
       'name': name,
       'username': username,
       'email': email,

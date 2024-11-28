@@ -6,7 +6,11 @@ import 'package:mea/view/all/profile.dart';
 
 class AuthController extends GetxController {
   var isLoggedIn = false.obs; // Status login
-  var userData = RxMap<String, dynamic>(); // Tipe RxMap<String, dynamic>
+  var userData = <String, dynamic>{}.obs; // Data pengguna sebagai RxMap
+
+  String get userId => userData['id'] ?? '';
+  String get role => userData['role'] ?? '';
+  
 
   Future<void> checkLoginStatus() async {
     final prefs = await SharedPreferences.getInstance();

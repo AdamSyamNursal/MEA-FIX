@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mea/model/modeluser.dart';
 import 'package:mea/view/all/login.dart'; // Pastikan path benar
+import 'package:uuid/uuid.dart'; // Import UUID
 
 class Register extends StatefulWidget {
   @override
@@ -27,6 +28,9 @@ class _RegisterState extends State<Register> {
     if (!_formKey.currentState!.validate()) return;
 
     try {
+      // Generate UUID untuk ID pengguna
+      final userId = Uuid().v4();
+
       // Extract form values
       final name = _nameController.text.trim();
       final username = _usernameController.text.trim();
@@ -39,6 +43,7 @@ class _RegisterState extends State<Register> {
 
       // Save user data to Firestore
       final user = UserModel(
+        id: userId, // ID pengguna
         name: name,
         username: username,
         email: email,
@@ -50,7 +55,7 @@ class _RegisterState extends State<Register> {
         registrationDate: DateTime.now().toIso8601String(),
       );
 
-      await _firestore.collection('users').add(user.toJson());
+      await _firestore.collection('users').doc(userId).set(user.toJson());
 
       // Notifikasi sukses menggunakan Get.snackbar
       Get.snackbar(

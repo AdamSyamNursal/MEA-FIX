@@ -95,3 +95,35 @@ class Detail extends StatelessWidget{
     ));
   }
 }
+
+  // Widget _buildLaporanItem(Map<String, dynamic> laporan) {
+  //   return Card(
+  //     margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+  //     child: ListTile(
+  //       title: Text(
+  //         laporan['alamat'] ?? 'Alamat Tidak Diketahui',
+  //         style: TextStyle(fontWeight: FontWeight.bold),
+  //       ),
+  //       subtitle: Column(
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         children: [
+  //           Text(
+  //             laporan['keterangan'] ?? 'Keterangan Tidak Tersedia',
+  //             style: TextStyle(color: Colors.grey[700]),
+  //           ),
+  //           SizedBox(height: 4),
+  //           Text(
+  //             'Role: ${laporan['role'] ?? 'Tidak Diketahui'}',
+  //             style: TextStyle(color: Colors.grey[700]),
+  //           ),
+  //         ],
+  //       ),
+  //       trailing: Text(
+  //         laporan['tanggal'] != null
+  //             ? (laporan['tanggal'] as Timestamp).toDate().toString()
+  //             : 'Tanggal Tidak Diketahui',
+  //         style: TextStyle(color: Colors.grey, fontSize: 12),
+  //       ),
+  //     ),
+  //   );
+  // }

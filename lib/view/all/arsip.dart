@@ -73,7 +73,7 @@ class arsip extends StatelessWidget {
                           ],
                         ),
                         SizedBox(height: 10),
-                        Kosong(isilist: false),
+                        //Kosong(isilist: false),
                         SizedBox(height: 10),
                         
                         

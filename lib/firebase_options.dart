@@ -47,28 +47,29 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDUCpYe70WHYyyLAgDuC1oxodWlb9ri2WM',
-    appId: '1:736869811755:web:c6cde74eb7621648ed0c6e',
-    messagingSenderId: '736869811755',
-    projectId: 'marapiapp',
-    authDomain: 'marapiapp.firebaseapp.com',
-    storageBucket: 'marapiapp.firebasestorage.app',
+    apiKey: 'AIzaSyCn23EHOTNaqn06rOsCPuXuyUvDXXBHG5w',
+    appId: '1:942736749129:web:19243fd7a8f54ac5e14598',
+    messagingSenderId: '942736749129',
+    projectId: 'jembatan-8ec24',
+    authDomain: 'jembatan-8ec24.firebaseapp.com',
+    storageBucket: 'jembatan-8ec24.appspot.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDVxr1xq4cAMIoKC_BtG6HFrLHFxR0AV0Y',
-    appId: '1:736869811755:android:9366aef20595d507ed0c6e',
-    messagingSenderId: '736869811755',
-    projectId: 'marapiapp',
-    storageBucket: 'marapiapp.firebasestorage.app',
+    apiKey: 'AIzaSyCq7WX5SsxyD2vMEKRWQyIEg0mNWQKFWuw',
+    appId: '1:942736749129:android:cac24d93a06a8a95e14598',
+    messagingSenderId: '942736749129',
+    projectId: 'jembatan-8ec24',
+    storageBucket: 'jembatan-8ec24.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBvsmTbbnQvFNII5Z8tyxMhlNTnYo6e98g',
-    appId: '1:736869811755:ios:be4f217cc03fe160ed0c6e',
-    messagingSenderId: '736869811755',
-    projectId: 'marapiapp',
-    storageBucket: 'marapiapp.firebasestorage.app',
+    apiKey: 'AIzaSyAH7BKgK7MyKOH9dfowBGcW-bm760hsEzM',
+    appId: '1:942736749129:ios:81b251c64320d8bbe14598',
+    messagingSenderId: '942736749129',
+    projectId: 'jembatan-8ec24',
+    storageBucket: 'jembatan-8ec24.appspot.com',
     iosBundleId: 'com.example.mea',
   );
+
 }

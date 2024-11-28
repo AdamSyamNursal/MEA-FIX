@@ -1,21 +1,59 @@
 {
   "project_info": {
-    "project_number": "736869811755",
-    "project_id": "marapiapp",
-    "storage_bucket": "marapiapp.firebasestorage.app"
+    "project_number": "942736749129",
+    "project_id": "jembatan-8ec24",
+    "storage_bucket": "jembatan-8ec24.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:736869811755:android:9366aef20595d507ed0c6e",
+        "mobilesdk_app_id": "1:942736749129:android:3fcf4fa4e332e00ce14598",
         "android_client_info": {
-          "package_name": "app.marapiapp.com"
+          "package_name": "com.example.jembatan"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDVxr1xq4cAMIoKC_BtG6HFrLHFxR0AV0Y"
+          "current_key": "AIzaSyCq7WX5SsxyD2vMEKRWQyIEg0mNWQKFWuw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:942736749129:android:543be345b44c9117e14598",
+        "android_client_info": {
+          "package_name": "com.jembatan.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCq7WX5SsxyD2vMEKRWQyIEg0mNWQKFWuw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:942736749129:android:cac24d93a06a8a95e14598",
+        "android_client_info": {
+          "package_name": "com.marapi.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCq7WX5SsxyD2vMEKRWQyIEg0mNWQKFWuw"
         }
       ],
       "services": {

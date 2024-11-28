@@ -1,18 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mea/controller/level.dart';
+import 'package:mea/controller/list/kosong.dart';
+import 'package:mea/controller/list/listlaporan.dart';
 import 'package:mea/controller/appbar/burger/burger.dart';
 import 'package:mea/controller/appbar/lokasi.dart';
 import 'package:mea/controller/auth/auth_controller.dart';
-import 'package:mea/controller/level.dart';
-import 'package:mea/controller/list/listlaporan.dart';
-import 'package:mea/view/all/laporan_aktivitas.dart';
 import 'package:mea/view/all/login.dart';
-import 'package:mea/view/all/pesan.dart';
 import 'package:mea/view/all/profile.dart';
-import 'package:mea/view/all/tambahlaporan.dart'; // Import halaman TambahLaporan
+import 'package:mea/view/all/tambahlaporan.dart';
 import 'package:mea/view/floating.dart';
 
 class dashboard extends StatelessWidget {
+  final AuthController authController = Get.find<AuthController>();
+
+  void _showEditDropdown(BuildContext context) {
+    // Tambahkan logika untuk dropdown "Edit"
+    print("Edit dropdown dipilih");
+  }
+
+  void _handleNotificationAction(String value) {
+    // Tambahkan logika untuk notifikasi
+    print("Notifikasi: $value");
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -43,34 +55,62 @@ class dashboard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 80.0),
-                        child: Column(
-                          children: [
-                            SizedBox(height: 10),
-                            Level(level: 1),
-                            SizedBox(height: 10),
-                            Container(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 17.0),
+                      child: Column(
+                        children: [
+                          SizedBox(height: 10),
+                          // Level Indicator
+                          Level(level: 1),
+                          SizedBox(height: 10),
+                          // Tombol Edit, Notifikasi, dan Detail
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 17.0),
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Container(
-                                    width: 123,
-                                    height: 69,
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      _showEditDropdown(context);
+                                    },
                                     child: Text(
-                                      "Laporan\nAktivitas\nVolcanic",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20,
-                                        height: 1.0,
-                                      ),
-                                      textAlign: TextAlign.left,
+                                      "Edit",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.orange,
                                     ),
                                   ),
+                                  SizedBox(width: 10),
+                                  PopupMenuButton<String>(
+                                    onSelected: (String value) {
+                                      _handleNotificationAction(value);
+                                    },
+                                    itemBuilder: (BuildContext context) {
+                                      return [
+                                        PopupMenuItem(
+                                          value: "Laporan",
+                                          child: Text("Laporan"),
+                                        ),
+                                        PopupMenuItem(
+                                          value: "Akun",
+                                          child: Text("Akun"),
+                                        ),
+                                      ];
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.notifications, color: Colors.black),
+                                        SizedBox(width: 5),
+                                        Text(
+                                          "Notifikasi",
+                                          style: TextStyle(color: Colors.black),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
                                   Container(
                                     height: 34,
                                     width: 84,
@@ -78,37 +118,60 @@ class dashboard extends StatelessWidget {
                                       color: Colors.white,
                                       border: Border.all(color: Colors.black),
                                     ),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        Get.to(() => LaporanAktivitas());
-                                      },
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text("Detail"),
-                                          Icon(Icons.arrow_right_sharp,
-                                              size: 30),
-                                        ],
-                                      ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text("Detail"),
+                                        Icon(Icons.arrow_right_sharp, size: 30),
+                                      ],
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                            SizedBox(height: 10),
-                            listlaporan(),
-                            SizedBox(height: 10),
-                            listlaporan(),
-                          ],
-                        ),
+                          ),
+                          SizedBox(height: 10),
+                          // Daftar Laporan
+                          Container(
+                            height: 400,
+                            child: StreamBuilder<QuerySnapshot>(
+                              stream: FirebaseFirestore.instance
+                                  .collection('laporan')
+                                  .orderBy('tanggal', descending: true)
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                  return Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }
+                            
+                                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                                  return Kosong(
+                                    isilist: false,
+                                    content: Container(),
+                                  );
+                                }
+                            
+                                final laporanList = snapshot.data!.docs.map((doc) {
+                                  return doc.data() as Map<String, dynamic>;
+                                }).toList();
+                            
+                                return Kosong(
+                                  isilist: true,
+                                  content: listlaporan(laporanList: laporanList),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                )
+                ),
               ],
             ),
-            // FloatingNavbar dengan navigasi ke TambahLaporan
+            // FloatingNavbar
             FloatingNavbar(
               onTap: (index) {
                 switch (index) {
@@ -116,21 +179,30 @@ class dashboard extends StatelessWidget {
                     Get.to(() => dashboard());
                     break;
                   case 1:
-                    Get.to(() => TambahLaporan());
+                    if (authController.isLoggedIn.value) {
+                      Get.to(() => TambahLaporan(
+                            userId: authController.userId,
+                            role: authController.role,
+                          ));
+                    } else {
+                      Get.to(() => TambahLaporan(
+                            userId: '',
+                            role: 'user',
+                          ));
+                    }
                     break;
                   case 2:
-                    Get.to(() => Pesan());
+                    // Navigasi lainnya
                     break;
-case 3:
-  final authController = Get.find<AuthController>();
-  if (authController.isLoggedIn.value) {
-    // Jika sudah login, navigasi ke halaman profil
-    Get.to(() => ProfilePage(userData: authController.userData.value));
-  } else {
-    // Jika belum login, navigasi ke halaman login
-    Get.to(() => Login());
-  }
-  break;
+                  case 3:
+                    if (authController.isLoggedIn.value) {
+                      Get.to(() => ProfilePage(
+                            userData: authController.userData.value,
+                          ));
+                    } else {
+                      Get.to(() => Login());
+                    }
+                    break;
                 }
               },
             ),
