@@ -1,60 +1,61 @@
 import 'package:flutter/material.dart';
-import 'package:mea/controller/level.dart';
-import 'package:mea/controller/list/appbar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mea/controller/list/detail/deskripsiinformasi.dart';
 import 'package:mea/controller/list/detail/detaillokasi.dart';
 import 'package:mea/controller/list/detail/maps.dart';
 import 'package:mea/controller/list/detail/validdetail.dart';
-import 'package:mea/controller/list/listlaporan.dart';
 import 'package:mea/controller/list/sub/stacklaporan.dart';
-import 'package:mea/view/all/arsip.dart';
 
-class Detail extends StatelessWidget{
+class Detail extends StatelessWidget {
+  final String idLaporan; // Tambahkan parameter ID laporan
+
+  Detail({required this.idLaporan});
+
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return SafeArea(child: 
-    Scaffold(
-      backgroundColor: Color(0xFFFF6F00),
-      body:Container(
-        child: Column(
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Color(0xFFFF6F00),
+        body: Column(
           children: [
+            // AppBar
             Container(
-  padding: EdgeInsets.symmetric(horizontal: 16), // Memberi jarak horizontal
-  child: Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween, // Distribusi elemen
-    crossAxisAlignment: CrossAxisAlignment.center, // Menyelaraskan vertikal
-    children: [
-      GestureDetector(
-        onTap: () {
-          Navigator.pop(context); // Navigasi kembali
-        },
-        child: Container(
-          height: 27,
-          width: 27,
-          child: Icon(
-            Icons.keyboard_backspace_rounded,
-            color: Colors.white,
-          ),
-        ),
-      ),
-      Expanded(
-        child: Center(
-          child: Text(
-            "Detail Laporan",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-              fontSize: 20,
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      height: 27,
+                      width: 27,
+                      child: Icon(
+                        Icons.keyboard_backspace_rounded,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        "Detail Laporan",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 27),
+                ],
+              ),
             ),
-          ),
-        ),
-      ),
-      SizedBox(width: 27), // Spacer untuk menjaga layout seimbang
-    ],
-  ),
-),
-            SizedBox(height: 10,),
+            SizedBox(height: 10),
+            // Konten Detail
             Expanded(
               child: Container(
                 width: double.infinity,
@@ -62,68 +63,51 @@ class Detail extends StatelessWidget{
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 10,
-                      ),
-                      gambarstack(),
-                      maps(),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      detaillokasi(),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      deskripsilokasi(),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Validdetail(valid: false,),
-                      SizedBox(height: 10,)
+                child: FutureBuilder<DocumentSnapshot>(
+                  future: FirebaseFirestore.instance
+                      .collection('laporan')
+                      .doc(idLaporan)
+                      .get(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    }
 
-                    ],
-                  ),
+                    if (!snapshot.hasData || !snapshot.data!.exists) {
+                      return Center(child: Text("Laporan tidak ditemukan."));
+                    }
+
+                    final data = snapshot.data!.data() as Map<String, dynamic>;
+
+                    return SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          SizedBox(height: 10),
+                          gambarstack(), // Sesuaikan dengan data jika perlu
+                          maps(), // Tambahkan logika untuk menampilkan peta berdasarkan data
+                          SizedBox(height: 5),
+                          detaillokasi(
+                            id: data['id'] ?? 'Alamat tidak tersedia',
+                          ),
+                          SizedBox(height: 5),
+                          deskripsilokasi(
+                            id: data['id'] ?? 'Deskripsi tidak tersedia',
+                          ),
+                          SizedBox(height: 10),
+                          Validdetail(
+                            valid: data['valid'] ?? false,
+                          ),
+                          SizedBox(height: 10),
+                        ],
+                      ),
+                    );
+                  },
                 ),
               ),
-          )
+            ),
           ],
         ),
-      )
-    ));
+      ),
+    );
   }
 }
-
-  // Widget _buildLaporanItem(Map<String, dynamic> laporan) {
-  //   return Card(
-  //     margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-  //     child: ListTile(
-  //       title: Text(
-  //         laporan['alamat'] ?? 'Alamat Tidak Diketahui',
-  //         style: TextStyle(fontWeight: FontWeight.bold),
-  //       ),
-  //       subtitle: Column(
-  //         crossAxisAlignment: CrossAxisAlignment.start,
-  //         children: [
-  //           Text(
-  //             laporan['keterangan'] ?? 'Keterangan Tidak Tersedia',
-  //             style: TextStyle(color: Colors.grey[700]),
-  //           ),
-  //           SizedBox(height: 4),
-  //           Text(
-  //             'Role: ${laporan['role'] ?? 'Tidak Diketahui'}',
-  //             style: TextStyle(color: Colors.grey[700]),
-  //           ),
-  //         ],
-  //       ),
-  //       trailing: Text(
-  //         laporan['tanggal'] != null
-  //             ? (laporan['tanggal'] as Timestamp).toDate().toString()
-  //             : 'Tanggal Tidak Diketahui',
-  //         style: TextStyle(color: Colors.grey, fontSize: 12),
-  //       ),
-  //     ),
-  //   );
-  // }

@@ -14,6 +14,7 @@ class TambahLaporan extends StatelessWidget {
   final TextEditingController _kodePosController = TextEditingController();
   final TextEditingController _alamatController = TextEditingController();
   final TextEditingController _keteranganController = TextEditingController();
+  final TextEditingController _pengirimController = TextEditingController(); // Baru: Controller untuk pengirim
 
   final String userId; // ID pengguna
   final String role; // Role pengguna
@@ -36,7 +37,8 @@ class TambahLaporan extends StatelessWidget {
         alamat: _alamatController.text.trim(),
         keterangan: _keteranganController.text.trim(),
         tanggal: DateTime.now(), // Waktu laporan dibuat
-        valid: false,
+        valid: false, // Default validasi laporan
+        pengirim: _pengirimController.text.trim(), // Baru: Tambahkan pengirim
       );
 
       // Tambahkan data ke Firestore
@@ -59,6 +61,7 @@ class TambahLaporan extends StatelessWidget {
       _kodePosController.clear();
       _alamatController.clear();
       _keteranganController.clear();
+      _pengirimController.clear(); // Reset input pengirim
     } catch (e) {
       // Notifikasi error
       ScaffoldMessenger.of(context).showSnackBar(
@@ -136,7 +139,7 @@ class TambahLaporan extends StatelessWidget {
                         SizedBox(height: 10),
                         TextField(
                           controller: _namaJalanController,
-                          decoration: InputDecoration(
+                          decoration:                          InputDecoration(
                             labelText: "Nama Jalan",
                             border: OutlineInputBorder(),
                             filled: true,
@@ -188,6 +191,27 @@ class TambahLaporan extends StatelessWidget {
                           controller: _kodePosController,
                           decoration: InputDecoration(
                             labelText: "Kode Pos",
+                            border: OutlineInputBorder(),
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                          ),
+                        ),
+                        SizedBox(height: 20),
+
+                        // Pengirim
+                        Text(
+                          "Pengirim:",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFFFF6F00),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        TextField(
+                          controller: _pengirimController,
+                          decoration: InputDecoration(
+                            labelText: "Nama Pengirim",
                             border: OutlineInputBorder(),
                             filled: true,
                             fillColor: Colors.grey[200],
@@ -256,3 +280,4 @@ class TambahLaporan extends StatelessWidget {
     );
   }
 }
+

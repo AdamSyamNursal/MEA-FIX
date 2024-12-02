@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mea/view/all/detail.dart';
 
 class Isilistvalid extends StatelessWidget{
   final bool valid;
+  final String idLaporan;
 
-  Isilistvalid ({required this.valid});
+  Isilistvalid ({required this.valid, required this.idLaporan});
 
   Color backgroundColor(){
     if (valid == true){
@@ -38,12 +40,7 @@ class Isilistvalid extends StatelessWidget{
 Container(
   child: GestureDetector(
     onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Detail(), // Ganti DetailPage dengan nama kelas halaman detail Anda
-        ),
-      );
+      Get.to(() => Detail(idLaporan: idLaporan));
     },
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,

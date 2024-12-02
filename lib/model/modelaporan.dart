@@ -14,6 +14,7 @@ class Laporan {
   final String keterangan;
   final DateTime tanggal;
   final bool valid ;
+  final String pengirim;
 
   Laporan({
     required this.id,
@@ -29,6 +30,7 @@ class Laporan {
     required this.keterangan,
     required this.tanggal,
     required this.valid,
+    required this.pengirim,
   });
 
   // Factory untuk membuat objek dari Map (Firestore)
@@ -47,6 +49,7 @@ class Laporan {
       keterangan: json['keterangan'] ?? '',
       tanggal: (json['tanggal'] as Timestamp).toDate(),
       valid: (json['valid'] ?? ' '),
+      pengirim: (json['pengirim'] ?? ' '),
     );
   }
 
@@ -65,6 +68,7 @@ class Laporan {
       'keterangan': keterangan,
       'tanggal': tanggal,
       'valid' : valid,
+      'pengirim' : pengirim,
     };
   }
 }

@@ -38,7 +38,10 @@ class listlaporan extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   isilistshor(content: laporan['keterangan'] ?? 'Tidak ada keterangan'),
-                  Isilistvalid(valid: laporan['valid'] ?? false),
+                  Isilistvalid(
+                    valid: laporan['valid'] ?? false,
+                    idLaporan: laporan['id'] ?? '',
+                  ),
                 ],
               ),
             ),
@@ -60,6 +63,7 @@ class listlaporan extends StatelessWidget {
     }
 
     return ListView.builder(
+      padding: EdgeInsets.only(bottom: 70.0), // Tambahkan padding untuk ruang ekstra
       itemCount: laporanList.length,
       itemBuilder: (context, index) {
         final laporan = laporanList[index];
