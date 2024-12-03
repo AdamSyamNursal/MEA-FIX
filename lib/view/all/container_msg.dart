@@ -2,6 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:mea/view/all/detailpesan.dart'; // Import halaman DetailPesan
 
 class ContainerMsg extends StatelessWidget {
+  final String namaPengirim;
+  final String deskripsiPesan;
+  final String iconPath;
+  final Function onTapDetail;
+
+  ContainerMsg({
+    required this.namaPengirim,
+    required this.deskripsiPesan,
+    required this.iconPath,
+    required this.onTapDetail,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -23,14 +35,18 @@ class ContainerMsg extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: 10),
-          Container(
+          Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30.0),
             child: Row(
               children: [
-                Image.asset("assets/icons/relawan.png"),
+                Image.asset(
+                  iconPath, // Path ikon dinamis
+                  height: 30, // Pastikan ukuran sesuai
+                  width: 30,
+                ),
                 SizedBox(width: 10),
                 Text(
-                  "Junaidi",
+                  namaPengirim, // Nama pengirim dari parameter
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.green,
@@ -40,30 +56,20 @@ class ContainerMsg extends StatelessWidget {
               ],
             ),
           ),
-          Container(
+          Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25.0),
-            width: double.infinity,
-            height: 64,
-            child: Center(
-              child: Text(
-                "Cuaca berawan. Angin bertiup lemah ke arah timur dan barat laut. Suhu udara 21.1-28.3 °C, kelembaban udara 60.5-84.3 %, dan tekanan udara 681.8-681.9 mmHg",
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-              ),
+            child: Text(
+              deskripsiPesan, // Deskripsi pesan dari parameter
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontSize: 14),
             ),
           ),
-          Container(
-            width: double.infinity,
-            height: 22,
+          Spacer(),
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
             child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Detailpesan(), // Navigasi ke DetailPesan
-                  ),
-                );
-              },
+              onTap: () => onTapDetail(), // Fungsi detail dari parameter
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -75,7 +81,6 @@ class ContainerMsg extends StatelessWidget {
                     ),
                   ),
                   Icon(Icons.keyboard_arrow_right_rounded),
-                  SizedBox(width: 10),
                 ],
               ),
             ),

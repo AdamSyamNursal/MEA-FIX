@@ -83,7 +83,9 @@ class Detail extends StatelessWidget {
                       child: Column(
                         children: [
                           SizedBox(height: 10),
-                          gambarstack(), // Sesuaikan dengan data jika perlu
+                          gambarstack(
+                            role: data['role'] ?? '',
+                          ), // Sesuaikan dengan data jika perlu
                           maps(), // Tambahkan logika untuk menampilkan peta berdasarkan data
                           SizedBox(height: 5),
                           detaillokasi(

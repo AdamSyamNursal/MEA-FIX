@@ -67,9 +67,9 @@ class arsip extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            DropdownBulan(),
+                            //DropdownBulan(),
                             SizedBox(width: 10),
-                            DropdownTahun(),
+                            //DropdownTahun(),
                           ],
                         ),
                         SizedBox(height: 10),

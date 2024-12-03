@@ -1,39 +1,86 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:mea/controller/list/listlaporan.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mea/view/all/container_msg.dart';
 
 class PesanKosong extends StatelessWidget {
-  final bool isipesan;
+  final bool isiPesan;
 
-  PesanKosong({required this.isipesan});
-
-  Widget ada() {
-    if (isipesan == true) {
-      return ContainerMsg();
-    } else {
-      return Container(
-        child: Column(
-          children: [
-            Center(
-              child: Text("Pesan Kosong" , style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.orange),),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-              child: Center(
-                child: Image.asset('assets/images/kosong.png',width: 250, height: 294, fit: BoxFit.fill,),
-              ),
-            )
-          ],
-        ),
-      );
-    }
-  }
+  PesanKosong({required this.isiPesan});
 
   @override
   Widget build(BuildContext context) {
-    return ada();
+    if (!isiPesan) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "Pesan Kosong",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.orange,
+            ),
+          ),
+          SizedBox(height: 20),
+          Image.asset(
+            'assets/images/kosong.png',
+            width: 250,
+            height: 294,
+            fit: BoxFit.fill,
+          ),
+        ],
+      );
+    }
+
+    // Menampilkan data dari Firebase
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('pesan')
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Tidak ada pesan dari Relawan",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.orange,
+                ),
+              ),
+              SizedBox(height: 20),
+              Image.asset(
+                'assets/images/kosong.png',
+                width: 250,
+                height: 294,
+                fit: BoxFit.fill,
+              ),
+            ],
+          );
+        }
+
+        final List<QueryDocumentSnapshot> docs = snapshot.data!.docs;
+        return ListView.builder(
+          itemCount: docs.length,
+          itemBuilder: (context, index) {
+            final pesan = docs[index].data() as Map<String, dynamic>;
+
+            return ContainerMsg(
+              namaPengirim: pesan['namaPengirim'] ?? 'Tidak diketahui',
+              deskripsiPesan: pesan['pertanyaan'] ?? 'Pesan tidak ada deskripsi',
+              iconPath: 'assets/icons/relawan.png',
+              onTapDetail: () {
+                // Tambahkan logika untuk navigasi atau aksi lainnya
+              },
+            );
+          },
+        );
+      },
+    );
   }
 }

@@ -1,60 +1,76 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class DropdownBulan extends StatefulWidget {
-  @override
-  _DropdownBulanState createState() => _DropdownBulanState();
-}
 
-class _DropdownBulanState extends State<DropdownBulan> {
-  String _selectedBulan = 'Januari';
-  final List<String> _bulanList = [
-    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-  ];
+class DropdownBulan extends StatelessWidget {
+  final PesanFilterController controller = Get.find();
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButton<String>(
-      value: _selectedBulan,
-      items: _bulanList.map((String bulan) {
-        return DropdownMenuItem<String>(
-          value: bulan,
-          child: Text(bulan),
-        );
-      }).toList(),
-      onChanged: (String? newValue) {
-        setState(() {
-          _selectedBulan = newValue!;
-        });
-      },
+    return Obx(
+      () => DropdownButton<String>(
+        value: controller.selectedBulan.value,
+        items: controller.bulanKeAngka.keys.map((String bulan) {
+          return DropdownMenuItem<String>(
+            value: bulan,
+            child: Text(bulan),
+          );
+        }).toList(),
+        onChanged: (String? newValue) {
+          if (newValue != null) {
+            controller.selectedBulan.value = newValue;
+          }
+        },
+      ),
     );
   }
 }
 
-class DropdownTahun extends StatefulWidget {
-  @override
-  _DropdownTahunState createState() => _DropdownTahunState();
-}
-
-class _DropdownTahunState extends State<DropdownTahun> {
-  String _selectedTahun = '2024';
-  final List<String> _tahunList = ['2024', '2025', '2026'];
+class DropdownTahun extends StatelessWidget {
+  final PesanFilterController controller = Get.find();
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButton<String>(
-      value: _selectedTahun,
-      items: _tahunList.map((String tahun) {
-        return DropdownMenuItem<String>(
-          value: tahun,
-          child: Text(tahun),
-        );
-      }).toList(),
-      onChanged: (String? newValue) {
-        setState(() {
-          _selectedTahun = newValue!;
-        });
-      },
+    return Obx(
+      () => DropdownButton<String>(
+        value: controller.selectedTahun.value,
+        items: ['2024', '2025', '2026'].map((String tahun) {
+          return DropdownMenuItem<String>(
+            value: tahun,
+            child: Text(tahun),
+          );
+        }).toList(),
+        onChanged: (String? newValue) {
+          if (newValue != null) {
+            controller.selectedTahun.value = newValue;
+          }
+        },
+      ),
     );
   }
+}
+
+
+class PesanFilterController extends GetxController {
+  var selectedBulan = 'Januari'.obs;
+  var selectedTahun = '2024'.obs;
+
+  // Map bulan ke angka untuk filtering
+  final Map<String, int> bulanKeAngka = {
+    'Januari': 1,
+    'Februari': 2,
+    'Maret': 3,
+    'April': 4,
+    'Mei': 5,
+    'Juni': 6,
+    'Juli': 7,
+    'Agustus': 8,
+    'September': 9,
+    'Oktober': 10,
+    'November': 11,
+    'Desember': 12,
+  };
+
+  int get bulanTerpilih => bulanKeAngka[selectedBulan.value]!;
+  int get tahunTerpilih => int.parse(selectedTahun.value);
 }

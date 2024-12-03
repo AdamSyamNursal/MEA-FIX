@@ -8,8 +8,10 @@ import 'package:mea/controller/appbar/burger/burger.dart';
 import 'package:mea/controller/auth/auth_controller.dart';
 import 'package:mea/view/all/laporan_aktivitas.dart';
 import 'package:mea/view/all/login.dart';
+import 'package:mea/view/all/pesan.dart';
 import 'package:mea/view/all/profile.dart';
 import 'package:mea/view/all/tambahlaporan.dart';
+import 'package:mea/view/all/tambahpesan.dart';
 import 'package:mea/view/floating.dart';
 
 class dashboard extends StatelessWidget {
@@ -186,6 +188,17 @@ class dashboard extends StatelessWidget {
                     }
                     break;
                   case 2:
+                    if (authController.isLoggedIn.value) {
+                      Get.to(() => Pesan(
+                            userId: authController.userId,
+                            role: authController.role,
+                          ));
+                    } else {
+                      Get.to(() => Pesan(
+                            userId: '',
+                            role: 'user',
+                          ));
+                    }
                     break;
                   case 3:
                     if (authController.isLoggedIn.value) {

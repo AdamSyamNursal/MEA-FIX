@@ -29,7 +29,9 @@ class listlaporan extends StatelessWidget {
         child: Column(
           children: [
             // Gambar stack
-            gambarstack(),
+            gambarstack(
+              role : laporan['role'] ?? '',
+            ),
             // Informasi dan validasi
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 17.0),

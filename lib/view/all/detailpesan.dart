@@ -1,147 +1,218 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mea/model/modelpesan.dart';
 
-class Detailpesan extends StatelessWidget {
+class DetailPesan extends StatefulWidget {
+  final ModelPesan pesan;
+  final String role;
+
+  DetailPesan({required this.pesan, required this.role});
+
+  @override
+  _DetailPesanState createState() => _DetailPesanState();
+}
+
+class _DetailPesanState extends State<DetailPesan> {
+  final TextEditingController replyController = TextEditingController();
+  String currentBalasan = ""; // Untuk menampilkan balasan terbaru
+
+  @override
+  void initState() {
+    super.initState();
+    // Ambil balasan terkini dari Firebase
+    currentBalasan = widget.pesan.balasan;
+  }
+
+  Future<void> kirimBalasan(String replyText) async {
+    await FirebaseFirestore.instance
+        .collection('pesan')
+        .doc(widget.pesan.idPesan)
+        .update({'balasan': replyText});
+
+    // Update tampilan dengan balasan terbaru
+    setState(() {
+      currentBalasan = replyText;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
+    // Menentukan warna dan ikon berdasarkan role
+    final Color roleColor = (widget.pesan.role == 'Relawan')
+        ? Colors.green
+        : (widget.pesan.role == 'user')
+            ? Colors.red
+            : Colors.grey;
+    final String roleIcon = (widget.pesan.role == 'Relawan')
+        ? 'assets/icons/relawan.png'
+        : (widget.pesan.role == 'user')
+            ? 'assets/icons/masyarakat.png'
+            : 'assets/icons/default.png';
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Detail Pesan", style: TextStyle(color: Colors.white),),
         backgroundColor: Color(0xFFFF6F00),
-        body: Column(
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header dengan Tombol Back dan Teks
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context); // Navigasi kembali
-                    },
-                    child: Icon(
-                      Icons.keyboard_backspace_rounded,
-                      color: Colors.white,
-                      size: 28,
-                    ),
+            // Header dengan ikon dan nama pengirim
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 30,
+                  backgroundColor: roleColor.withOpacity(0.2),
+                  child: Image.asset(
+                    roleIcon,
+                    width: 40,
+                    height: 40,
+                    fit: BoxFit.contain,
                   ),
-                  SizedBox(width: 10), // Spasi antara ikon dan teks
-                  Text(
-                    "Detail Pesan",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontSize: 20,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 10),
-            // Isi Halaman
-            Expanded(
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
                 ),
-                child: SingleChildScrollView(
+                SizedBox(width: 16),
+                Expanded(
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 10),
-                      // Tanggal
-                      Center(
-                        child: Text(
-                          "14-11-2024",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
+                      Text(
+                        widget.pesan.namaPengirim,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: roleColor,
                         ),
                       ),
-                      SizedBox(height: 10),
-                      // Pesan Pertama
-                      _buildPesanContainer(
-                        context,
-                        iconPath: "assets/icons/relawan.png",
-                        nama: "Junaidi",
-                        warnaNama: Colors.green,
-                        isiPesan:
-                            "Cuaca berawan. Angin bertiup lemah ke arah timur dan barat laut. Suhu udara 21.1-28.3 °C, kelembaban udara 60.5-84.3 %, dan tekanan udara 681.8-681.9 mmHg",
-                      ),
-                      SizedBox(height: 10),
-                      // Pesan Kedua
-                      _buildPesanContainer(
-                        context,
-                        iconPath: "assets/icons/BPBDicon.png",
-                        nama: "Supriadi",
-                        warnaNama: Colors.orange,
-                        isiPesan:
-                            "Cuaca berawan. Angin bertiup lemah ke arah timur dan barat laut. Suhu udara 21.1-28.3 °C, kelembaban udara 60.5-84.3 %, dan tekanan udara 681.8-681.9 mmHg",
+                      SizedBox(height: 4),
+                      Text(
+                        "Role: ${widget.pesan.role}",
+                        style: TextStyle(fontSize: 14, color: roleColor),
                       ),
                     ],
                   ),
                 ),
+              ],
+            ),
+            SizedBox(height: 20),
+
+            // Pertanyaan dan tanggal dalam satu box
+            Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.orange[50],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: roleColor, width: 1.5),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Pertanyaan:",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    widget.pesan.pertanyaan,
+                    style: TextStyle(fontSize: 14),
+                  ),
+                  SizedBox(height: 16),
+                  Text(
+                    "Tanggal: ${widget.pesan.timestamp.day}/${widget.pesan.timestamp.month}/${widget.pesan.timestamp.year}",
+                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
-    );
-  }
+            SizedBox(height: 20),
 
-  // Fungsi untuk membuat widget container pesan
-  Widget _buildPesanContainer(
-    BuildContext context, {
-    required String iconPath,
-    required String nama,
-    required Color warnaNama,
-    required String isiPesan,
-  }) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16), // Margin horizontal
-      padding: EdgeInsets.all(16), // Padding dalam kontainer
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2), // Warna bayangan
-            blurRadius: 10, // Radius bayangan
-            offset: Offset(0, 4), // Posisi bayangan
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Nama dan Ikon
-          Row(
-            children: [
-              Image.asset(iconPath, height: 24, width: 24), // Ikon pengirim
-              SizedBox(width: 10),
+            // Bagian Balasan
+            Text(
+              "Balasan:",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 8),
+            Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.orange, width: 1.5),
+              ),
+              child: Text(
+                currentBalasan.isNotEmpty
+                    ? currentBalasan
+                    : "Belum ada balasan.",
+                style: TextStyle(fontSize: 14),
+              ),
+            ),
+            SizedBox(height: 20),
+
+            // Jika role adalah BPBD, tampilkan box untuk menambahkan balasan
+            if (widget.role == 'BPBD') ...[
               Text(
-                nama,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: warnaNama,
-                  fontSize: 16,
+                "Tambahkan Balasan:",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.grey, width: 1.5),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: replyController,
+                        maxLines: 3,
+                        decoration: InputDecoration(
+                          hintText: "Tulis balasan Anda...",
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    GestureDetector(
+                      onTap: () async {
+                        final replyText = replyController.text.trim();
+                        if (replyText.isNotEmpty) {
+                          await kirimBalasan(replyText);
+
+                          // Tampilkan Snackbar
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Balasan berhasil dikirim!"),
+                              backgroundColor: Colors.green,
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+
+                          // Kosongkan TextField
+                          replyController.clear();
+                        }
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Color(0xFFFF6F00),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Icon(
+                          Icons.send,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
-          ),
-          SizedBox(height: 10),
-          // Isi Pesan
-          Text(
-            isiPesan,
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.black,
-            ),
-            maxLines: 3,
-            overflow: TextOverflow.ellipsis, // Pemangkasan teks panjang
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
