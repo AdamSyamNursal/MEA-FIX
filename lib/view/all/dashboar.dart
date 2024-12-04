@@ -16,13 +16,55 @@ import 'package:mea/view/floating.dart';
 
 class dashboard extends StatelessWidget {
   final AuthController authController = Get.find<AuthController>();
-
-  void _showEditDropdown(BuildContext context) {
-    print("Edit dropdown dipilih");
-  }
+  final LevelController levelController = Get.put(LevelController()); // Inisialisasi LevelController
 
   void _handleNotificationAction(String value) {
     print("Notifikasi: $value");
+  }
+
+  // Fungsi untuk menampilkan dialog dropdown
+  void _showEditDropdown(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Pilih Level"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: Text("Level 1 (Normal)"),
+                onTap: () {
+                  levelController.setLevel(1);
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text("Level 2 (Waspada)"),
+                onTap: () {
+                  levelController.setLevel(2);
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text("Level 3 (Siaga)"),
+                onTap: () {
+                  levelController.setLevel(3);
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text("Level 4 (Awas)"),
+                onTap: () {
+                  levelController.setLevel(4);
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -64,7 +106,7 @@ class dashboard extends StatelessWidget {
                             Icon(Icons.notifications, color: Colors.white),
                             SizedBox(width: 5),
                             Text(
-                              "Notifikasi", 
+                              "Notifikasi",
                               style: TextStyle(color: Colors.white),
                             ),
                           ],
@@ -73,7 +115,7 @@ class dashboard extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(height: 10,),
+                SizedBox(height: 10),
                 Expanded(
                   child: Container(
                     width: double.infinity,
@@ -84,7 +126,7 @@ class dashboard extends StatelessWidget {
                     child: Column(
                       children: [
                         SizedBox(height: 10),
-                        Level(level: 1),
+                        Obx(() => Level(level: levelController.selectedLevel.value)), // Tetap dinamis dari LevelController
                         SizedBox(height: 10),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 17.0),
@@ -92,19 +134,20 @@ class dashboard extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              ElevatedButton(
-                                onPressed: () {
-                                  _showEditDropdown(context);
-                                },
-                                child: Text(
-                                  "Edit",
-                                  style: TextStyle(color: Colors.white),
+                              if (authController.role == "BPBD")
+                                ElevatedButton(
+                                  onPressed: () {
+                                    _showEditDropdown(context); // Panggil fungsi dropdown
+                                  },
+                                  child: Text(
+                                    "Edit",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.orange,
+                                  ),
                                 ),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.orange,
-                                ),
-                              ),
-                              SizedBox(width: 10),
+                              SizedBox(width: authController.role == "BPBD" ? 10 : 0),
                               GestureDetector(
                                 onTap: () {
                                   Get.to(() => LaporanAktivitas());
@@ -130,7 +173,6 @@ class dashboard extends StatelessWidget {
                         ),
                         SizedBox(height: 10),
                         Container(
-                          
                           height: 420,
                           child: StreamBuilder<QuerySnapshot>(
                             stream: FirebaseFirestore.instance
@@ -216,5 +258,40 @@ class dashboard extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+
+class LevelController extends GetxController {
+  var selectedLevel = 1.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    FirebaseFirestore.instance
+        .collection('settings')
+        .doc('level')
+        .snapshots()
+        .listen((snapshot) {
+      if (snapshot.exists) {
+        selectedLevel.value = snapshot['level'] ?? 1;
+      }
+    });
+  }
+
+  void setLevel(int level) {
+    selectedLevel.value = level;
+    _saveLevelToFirebase(level);
+  }
+
+  Future<void> _saveLevelToFirebase(int level) async {
+    try {
+      await FirebaseFirestore.instance.collection('settings').doc('level').set({
+        'level': level,
+        'timestamp': FieldValue.serverTimestamp(), // Tambahkan timestamp
+      });
+    } catch (e) {
+      print('Error saving level to Firebase: $e');
+    }
   }
 }
