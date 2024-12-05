@@ -9,6 +9,7 @@ class UserModel {
   final String address;
   final String dateOfBirth;
   final String registrationDate;
+  
 
   UserModel({
     required this.id,

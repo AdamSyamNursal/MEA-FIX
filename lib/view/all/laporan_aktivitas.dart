@@ -5,6 +5,9 @@ import 'package:mea/view/all/dashboar.dart';
 import 'package:mea/view/all/editlaporanaktivitas.dart';
 
 class LaporanAktivitas extends StatelessWidget {
+  final String role;
+
+  LaporanAktivitas({required this.role});
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -86,22 +89,25 @@ class LaporanAktivitas extends StatelessWidget {
                                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                                 ),
                                 // Tombol Edit
-                                GestureDetector(
-                                  onTap: () {
-                                    Get.to(() => EditLaporanAktivitas());
-                                  },
-                                  child: Container(
-                                    padding: EdgeInsets.all(5),
-                                    decoration: BoxDecoration(
-                                      color: Colors.orange,
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                    child: Icon(
-                                      Icons.edit,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
+                                role == "BPBD"
+    ? GestureDetector(
+        onTap: () {
+          Get.to(() => EditLaporanAktivitas());
+        },
+        child: Container(
+          padding: EdgeInsets.all(5),
+          decoration: BoxDecoration(
+            color: Colors.orange,
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: Icon(
+            Icons.edit,
+            color: Colors.white,
+          ),
+        ),
+      )
+    : SizedBox.shrink(), // Tidak menampilkan apa-apa jika kondisi tidak terpenuhi
+
                               ],
                             ),
                             SizedBox(height: 5),

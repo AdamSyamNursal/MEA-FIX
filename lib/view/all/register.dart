@@ -53,6 +53,7 @@ class _RegisterState extends State<Register> {
         address: address,
         dateOfBirth: dateOfBirth,
         registrationDate: DateTime.now().toIso8601String(),
+        
       );
 
       await _firestore.collection('users').doc(userId).set(user.toJson());

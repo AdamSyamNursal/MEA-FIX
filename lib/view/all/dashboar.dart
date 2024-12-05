@@ -6,10 +6,12 @@ import 'package:mea/controller/list/kosong.dart';
 import 'package:mea/controller/list/listlaporan.dart';
 import 'package:mea/controller/appbar/burger/burger.dart';
 import 'package:mea/controller/auth/auth_controller.dart';
+import 'package:mea/view/all/laporan.dart';
 import 'package:mea/view/all/laporan_aktivitas.dart';
 import 'package:mea/view/all/login.dart';
 import 'package:mea/view/all/pesan.dart';
 import 'package:mea/view/all/profile.dart';
+import 'package:mea/view/all/rekomendasi.dart';
 import 'package:mea/view/all/tambahlaporan.dart';
 import 'package:mea/view/all/tambahpesan.dart';
 import 'package:mea/view/floating.dart';
@@ -76,7 +78,7 @@ class dashboard extends StatelessWidget {
           children: [
             Column(
               children: [
-                SizedBox(height: 30),
+                SizedBox(height: 20),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 17.0),
                   child: Row(
@@ -85,33 +87,80 @@ class dashboard extends StatelessWidget {
                     children: [
                       burger(),
                       PopupMenuButton<String>(
-                        onSelected: (String value) {
-                          _handleNotificationAction(value);
-                        },
-                        itemBuilder: (BuildContext context) {
-                          return [
-                            PopupMenuItem(
-                              value: "Laporan",
-                              child: Text("Laporan"),
-                            ),
-                            PopupMenuItem(
-                              value: "Akun",
-                              child: Text("Akun"),
-                            ),
-                          ];
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.notifications, color: Colors.white),
-                            SizedBox(width: 5),
-                            Text(
-                              "Notifikasi",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ),
+  onSelected: (String value) {
+    if (value == "Rekomendasi") {
+      Get.to(() => Rekomendasi(
+        role : authController.role
+      ));
+    }
+    if (value == "Laporan"){
+      Get.to(()=> ViewLaporan());
+    }
+    if(value == "Rekomendasi"){
+      Get.to(()=>"");
+    }
+  },
+  itemBuilder: (BuildContext context) {
+    if (authController.role == "BPBD") {
+      // Jika role adalah BPBD, tampilkan semua opsi
+      return [
+        PopupMenuItem(
+          value: "Laporan",
+          child: Text("Laporan"),
+        ),
+        PopupMenuItem(
+          value: "Akun",
+          child: Text("Akun"),
+        ),
+        PopupMenuItem(
+          value: "Rekomendasi",
+          child: Text("Rekomendasi"),
+        ),
+      ];
+    } else {
+      // Jika role bukan BPBD, hanya tampilkan opsi "Rekomendasi"
+      return [
+        PopupMenuItem(
+          value: "Rekomendasi",
+          child: Text("Rekomendasi"),
+        ),
+      ];
+    }
+  },
+  child: Container(
+    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6), // Ukuran lebih kecil
+    decoration: BoxDecoration(
+      color: Colors.orange, // Warna tombol
+      borderRadius: BorderRadius.circular(6), // Sudut lebih kecil
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.2),
+          offset: Offset(0, 1), // Posisi bayangan lebih dekat
+          blurRadius: 2, // Jarak blur lebih kecil
+        ),
+      ],
+    ),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(Icons.notifications, color: Colors.white, size: 16), // Ikon lebih kecil
+        SizedBox(width: 4),
+        Text(
+          "Rekomendasi",
+          style: TextStyle(
+            color: Colors.white, 
+            fontWeight: FontWeight.bold,
+            fontSize: 14, // Ukuran font lebih kecil
+          ),
+        ),
+      ],
+    ),
+  ),
+)
+
+
+
+
                     ],
                   ),
                 ),
@@ -150,7 +199,7 @@ class dashboard extends StatelessWidget {
                               SizedBox(width: authController.role == "BPBD" ? 10 : 0),
                               GestureDetector(
                                 onTap: () {
-                                  Get.to(() => LaporanAktivitas());
+                                  Get.to(() => LaporanAktivitas(role: authController.role,));
                                 },
                                 child: Container(
                                   height: 34,
