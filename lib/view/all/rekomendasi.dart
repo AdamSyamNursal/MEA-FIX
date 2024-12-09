@@ -8,7 +8,8 @@ import 'package:intl/intl.dart';
 
 class Rekomendasi extends StatelessWidget {
   final String role;
-  Rekomendasi({required this.role});
+  final bool acc;
+  Rekomendasi({required this.role, required this.acc});
 
   String formatDate(Timestamp timestamp) {
     DateTime date = timestamp.toDate();
@@ -78,7 +79,7 @@ class Rekomendasi extends StatelessWidget {
                             ),
                           ),
                         ),
-                        if (role == "BPBD")
+                        if (role == "BPBD" && acc)
                           GestureDetector(
                             onTap: () => Get.to(() => Viewedit()),
                             child: Container(

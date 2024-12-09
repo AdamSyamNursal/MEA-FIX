@@ -85,6 +85,8 @@ class Detail extends StatelessWidget {
                           SizedBox(height: 10),
                           gambarstack(
                             role: data['role'] ?? '',
+                            acc: data ['acc'] ?? false,
+                            gambar: data['imageUrl'] ?? ''
                           ), // Sesuaikan dengan data jika perlu
                           maps(), // Tambahkan logika untuk menampilkan peta berdasarkan data
                           SizedBox(height: 5),

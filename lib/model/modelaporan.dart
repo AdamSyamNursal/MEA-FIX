@@ -13,8 +13,9 @@ class Laporan {
   final String alamat;
   final String keterangan;
   final DateTime tanggal;
-  final bool valid ;
+  final bool valid;
   final String pengirim;
+  final String? imageUrl; // Tambahkan properti untuk URL gambar (opsional)
 
   Laporan({
     required this.id,
@@ -25,12 +26,13 @@ class Laporan {
     required this.provinsi,
     required this.kodePos,
     required this.userId,
-    required this.role, // Role pengguna
+    required this.role,
     required this.alamat,
     required this.keterangan,
     required this.tanggal,
     required this.valid,
     required this.pengirim,
+    this.imageUrl, // URL gambar opsional
   });
 
   // Factory untuk membuat objek dari Map (Firestore)
@@ -44,12 +46,13 @@ class Laporan {
       provinsi: json['provinsi'] ?? '',
       kodePos: json['kode_pos'] ?? '',
       userId: json['user_id'] ?? '',
-      role: json['role'] ?? '', // Ambil role dari Firestore
+      role: json['role'] ?? '',
       alamat: json['alamat'] ?? '',
       keterangan: json['keterangan'] ?? '',
       tanggal: (json['tanggal'] as Timestamp).toDate(),
-      valid: (json['valid'] ?? ' '),
-      pengirim: (json['pengirim'] ?? ' '),
+      valid: json['valid'] ?? false,
+      pengirim: json['pengirim'] ?? '',
+      imageUrl: json['imageUrl'], // Ambil URL gambar jika tersedia
     );
   }
 
@@ -63,12 +66,13 @@ class Laporan {
       'provinsi': provinsi,
       'kode_pos': kodePos,
       'user_id': userId,
-      'role': role, // Tambahkan role ke Map
+      'role': role,
       'alamat': alamat,
       'keterangan': keterangan,
       'tanggal': tanggal,
-      'valid' : valid,
-      'pengirim' : pengirim,
+      'valid': valid,
+      'pengirim': pengirim,
+      'imageUrl': imageUrl, // Tambahkan URL gambar jika ada
     };
   }
 }

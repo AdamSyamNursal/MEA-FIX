@@ -161,7 +161,7 @@ class Tambahpesan extends StatelessWidget {
 
                               // Navigasi ke halaman Pesan setelah 2 detik
                               Future.delayed(Duration(seconds: 2), () {
-                                Get.to(() => Pesan(userId: '', role: '',)); // Navigasi mengganti halaman
+                                Get.to(() => Pesan(userId: '', role: '', acc: false,)); // Navigasi mengganti halaman
                               });
                             } else {
                               Get.snackbar(

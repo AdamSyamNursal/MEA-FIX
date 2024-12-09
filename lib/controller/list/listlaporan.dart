@@ -5,8 +5,9 @@ import 'package:mea/controller/list/sub/stacklaporan.dart';
 
 class listlaporan extends StatelessWidget {
   final List<Map<String, dynamic>> laporanList;
+  final bool acc;
 
-  listlaporan({required this.laporanList});
+  listlaporan({required this.laporanList , required this.acc});
 
   Widget _buildLaporanItem(Map<String, dynamic> laporan) {
     return Padding(
@@ -30,8 +31,10 @@ class listlaporan extends StatelessWidget {
           children: [
             // Gambar stack
             gambarstack(
+              gambar : laporan['imageUrl'],
               role : laporan['role'] ?? '',
-            ),
+              acc : acc,
+             ),
             // Informasi dan validasi
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 17.0),

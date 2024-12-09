@@ -10,9 +10,10 @@ import 'package:mea/view/all/tambahpesan.dart';
 class Pesan extends StatelessWidget {
   final String userId;
   final String role;
+  final bool acc;
   final PesanFilterController controller = Get.put(PesanFilterController());
 
-  Pesan({required this.userId, required this.role});
+  Pesan({required this.userId, required this.role, required this.acc});
 
   @override
   Widget build(BuildContext context) {
@@ -133,12 +134,12 @@ class Pesan extends StatelessWidget {
                                     ? Colors.green
                                     : (pesan.role == 'user')
                                         ? Colors.red
-                                        : Colors.black;
+                                        : Colors.red;
                                 final String iconPath = (pesan.role == 'Relawan')
                                     ? 'assets/icons/relawan.png'
                                     : (pesan.role == 'user')
                                         ? 'assets/icons/masyarakat.png'
-                                        : '';
+                                        : 'assets/icons/masyarakat.png';
 
                                 return ListTile(
                                   contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -178,7 +179,7 @@ class Pesan extends StatelessWidget {
           ],
         ),
         // Tampilkan FAB hanya jika role bukan 'BPBD'
-        floatingActionButton: role != 'BPBD'
+        floatingActionButton: (role != 'BPBD' || acc != true) 
             ? FloatingActionButton(
                 onPressed: () {
                   Get.to(() => Tambahpesan(

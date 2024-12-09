@@ -9,6 +9,7 @@ class UserModel {
   final String address;
   final String dateOfBirth;
   final String registrationDate;
+  final bool acc;
   
 
   UserModel({
@@ -22,6 +23,7 @@ class UserModel {
     required this.address,
     required this.dateOfBirth,
     required this.registrationDate,
+    required this.acc,
   });
 
   // Mapping dari JSON
@@ -37,6 +39,7 @@ class UserModel {
       address: json['address'] ?? '',
       dateOfBirth: json['dateOfBirth'] ?? '',
       registrationDate: json['registrationDate'] ?? '',
+      acc: json['acc'] ?? '',
     );
   }
 
@@ -53,6 +56,7 @@ class UserModel {
       'address': address,
       'dateOfBirth': dateOfBirth,
       'registrationDate': registrationDate,
+      'acc' : acc,
     };
   }
 }

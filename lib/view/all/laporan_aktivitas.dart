@@ -6,8 +6,9 @@ import 'package:mea/view/all/editlaporanaktivitas.dart';
 
 class LaporanAktivitas extends StatelessWidget {
   final String role;
+  final bool acc;
 
-  LaporanAktivitas({required this.role});
+  LaporanAktivitas({required this.role, required this.acc});
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -89,7 +90,7 @@ class LaporanAktivitas extends StatelessWidget {
                                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                                 ),
                                 // Tombol Edit
-                                role == "BPBD"
+                                role == "BPBD" && acc
     ? GestureDetector(
         onTap: () {
           Get.to(() => EditLaporanAktivitas());

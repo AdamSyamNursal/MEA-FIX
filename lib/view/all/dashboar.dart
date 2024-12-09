@@ -18,13 +18,13 @@ import 'package:mea/view/floating.dart';
 
 class dashboard extends StatelessWidget {
   final AuthController authController = Get.find<AuthController>();
-  final LevelController levelController = Get.put(LevelController()); // Inisialisasi LevelController
+  final LevelController levelController = Get.put(LevelController()); 
 
   void _handleNotificationAction(String value) {
     print("Notifikasi: $value");
   }
 
-  // Fungsi untuk menampilkan dialog dropdown
+  
   void _showEditDropdown(BuildContext context) {
     showDialog(
       context: context,
@@ -90,7 +90,8 @@ class dashboard extends StatelessWidget {
   onSelected: (String value) {
     if (value == "Rekomendasi") {
       Get.to(() => Rekomendasi(
-        role : authController.role
+        role : authController.role,
+        acc : authController.acc
       ));
     }
     if (value == "Laporan"){
@@ -101,7 +102,7 @@ class dashboard extends StatelessWidget {
     }
   },
   itemBuilder: (BuildContext context) {
-    if (authController.role == "BPBD") {
+    if (authController.role == "BPBD" && authController.acc) {
       // Jika role adalah BPBD, tampilkan semua opsi
       return [
         PopupMenuItem(
@@ -183,7 +184,7 @@ class dashboard extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              if (authController.role == "BPBD")
+                              if (authController.role == "BPBD" && authController.acc)
                                 ElevatedButton(
                                   onPressed: () {
                                     _showEditDropdown(context); // Panggil fungsi dropdown
@@ -196,11 +197,11 @@ class dashboard extends StatelessWidget {
                                     backgroundColor: Colors.orange,
                                   ),
                                 ),
-                              SizedBox(width: authController.role == "BPBD" ? 10 : 0),
+                              SizedBox(width: authController.role == "BPBD" && authController.acc ? 10 : 0),
                               GestureDetector(
                                 onTap: () {
-                                  Get.to(() => LaporanAktivitas(role: authController.role,));
-                                },
+                                  Get.to(() => LaporanAktivitas(role: authController.role, acc: authController.acc));
+                                }, 
                                 child: Container(
                                   height: 34,
                                   width: 84,
@@ -248,7 +249,7 @@ class dashboard extends StatelessWidget {
 
                               return Kosong(
                                 isilist: true,
-                                content: listlaporan(laporanList: laporanList),
+                                content: listlaporan(laporanList: laporanList, acc : authController.acc),
                               );
                             },
                           ),
@@ -270,11 +271,13 @@ class dashboard extends StatelessWidget {
                       Get.to(() => TambahLaporan(
                             userId: authController.userId,
                             role: authController.role,
+                            
                           ));
                     } else {
                       Get.to(() => TambahLaporan(
                             userId: '',
                             role: 'user',
+                            
                           ));
                     }
                     break;
@@ -283,18 +286,20 @@ class dashboard extends StatelessWidget {
                       Get.to(() => Pesan(
                             userId: authController.userId,
                             role: authController.role,
+                            acc : authController.acc
                           ));
                     } else {
                       Get.to(() => Pesan(
                             userId: '',
                             role: 'user',
+                            acc: false,
                           ));
                     }
                     break;
                   case 3:
                     if (authController.isLoggedIn.value) {
                       Get.to(() => ProfilePage(
-                            userData: authController.userData.value,
+                            userid : authController.userId,
                           ));
                     } else {
                       Get.to(() => Login());

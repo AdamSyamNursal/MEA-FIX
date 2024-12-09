@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
           home: Obx(() {
             // Cek status login dan navigasi
             return authController.isLoggedIn.value
-                ? ProfilePage(userData: authController.userData.value.cast<String, dynamic>()) // Perbaikan
+                ? ProfilePage(userid: authController.userId) // Navigasi menggunakan userId
                 : SplashScreen();
           }),
           getPages: [
@@ -50,10 +50,11 @@ class MyApp extends StatelessWidget {
             GetPage(name: '/arsip', page: () => arsip()),
             GetPage(name: '/register', page: () => Register()),
             GetPage(name: '/login', page: () => Login()),
-            GetPage(name: '/profile', page: () => ProfilePage(userData: {})),
+            GetPage(name: '/profile', page: () => ProfilePage(userid: "")),
           ],
         );
       },
     );
   }
 }
+  

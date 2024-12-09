@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 
 class rolepengirim extends StatelessWidget {
   final String role;
+  final bool acc;
 
-  rolepengirim({required this.role});
+  rolepengirim({required this.role, required this.acc});
 
   Map<String, dynamic> tampilanrole() {
-    if (role == "Relawan") {
+    if (role == "Relawan" && acc) {
       return {
         "gambar": "assets/icons/relawan.png",
         "tulisan": Text(
@@ -14,7 +15,7 @@ class rolepengirim extends StatelessWidget {
           style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
         ),
       };
-    } else if (role == "BPBD") {
+    } else if (role == "BPBD" && acc) {
       return {
         "gambar": "assets/icons/bpbd.png",
         "tulisan": Text(
