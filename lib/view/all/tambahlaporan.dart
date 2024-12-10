@@ -1,9 +1,11 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:mea/model/modelaporan.dart';
 
 class TambahLaporan extends StatefulWidget {
@@ -32,6 +34,35 @@ class _TambahLaporanState extends State<TambahLaporan> {
   final TextEditingController _pengirimController = TextEditingController();
 
   File? _selectedImage; // Gambar yang dipilih
+  LatLng? _currentPosition;
+
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentLocation();
+  }
+
+  Future<void> _getCurrentLocation() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      await Geolocator.requestPermission();
+      return;
+    }
+
+    final permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      await Geolocator.requestPermission();
+      return;
+    }
+
+    final position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+    setState(() {
+      _currentPosition = LatLng(position.latitude, position.longitude);
+    });
+  }
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
@@ -149,7 +180,7 @@ class _TambahLaporanState extends State<TambahLaporan> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Color(0xFFFF6F00),
-        body: Column(
+                body: Column(
           children: [
             SizedBox(height: 56),
             Container(
@@ -200,74 +231,43 @@ class _TambahLaporanState extends State<TambahLaporan> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Detail Lokasi:",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFFFF6F00),
-                        ),
-                      ),
+_currentPosition != null
+    ? Container(
+        height: 200,
+        child: FlutterMap(
+          options: MapOptions(
+  initialCenter: _currentPosition ?? LatLng(50.5, 30.51), // Lokasi default jika _currentPosition null
+  initialZoom: 15.0,
+),
+          children: [
+            TileLayer(
+              urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+              subdomains: ['a', 'b', 'c'],
+            ),
+MarkerLayer(
+  markers: [
+    Marker(
+      point: _currentPosition!,
+      child: Icon(
+        Icons.location_on,
+        color: Colors.red,
+        size: 40,
+      ),
+    ),
+  ],
+),
+          ],
+        ),
+      )
+    : Center(child: CircularProgressIndicator()),
+
                       SizedBox(height: 10),
-                      TextField(
-                        controller: _namaJalanController,
-                        decoration: InputDecoration(
-                          labelText: "Nama Jalan",
-                          border: OutlineInputBorder(),
-                          filled: true,
-                          fillColor: Colors.grey[200],
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      TextField(
-                        controller: _kelurahanController,
-                        decoration: InputDecoration(
-                          labelText: "Kelurahan",
-                          border: OutlineInputBorder(),
-                          filled: true,
-                          fillColor: Colors.grey[200],
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      TextField(
-                        controller: _kecamatanController,
-                        decoration: InputDecoration(
-                          labelText: "Kecamatan",
-                          border: OutlineInputBorder(),
-                          filled: true,
-                          fillColor: Colors.grey[200],
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      TextField(
-                        controller: _kotaController,
-                        decoration: InputDecoration(
-                          labelText: "Kota",
-                          border: OutlineInputBorder(),
-                          filled: true,
-                          fillColor: Colors.grey[200],
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      TextField(
-                        controller: _provinsiController,
-                        decoration: InputDecoration(
-                          labelText: "Provinsi",
-                          border: OutlineInputBorder(),
-                          filled: true,
-                          fillColor: Colors.grey[200],
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      TextField(
-                        controller: _kodePosController,
-                        decoration: InputDecoration(
-                          labelText: "Kode Pos",
-                          border: OutlineInputBorder(),
-                          filled: true,
-                          fillColor: Colors.grey[200],
-                        ),
-                      ),
+                      _buildTextField("Nama Jalan", _namaJalanController),
+                      _buildTextField("Kelurahan", _kelurahanController),
+                      _buildTextField("Kecamatan", _kecamatanController),
+                      _buildTextField("Kota", _kotaController),
+                      _buildTextField("Provinsi", _provinsiController),
+                      _buildTextField("Kode Pos", _kodePosController),
                       SizedBox(height: 10),
                       Text(
                         "Pengirim:",
@@ -278,15 +278,7 @@ class _TambahLaporanState extends State<TambahLaporan> {
                         ),
                       ),
                       SizedBox(height: 10),
-                      TextField(
-                        controller: _pengirimController,
-                        decoration: InputDecoration(
-                          labelText: "Nama Pengirim",
-                          border: OutlineInputBorder(),
-                          filled: true,
-                          fillColor: Colors.grey[200],
-                        ),
-                      ),
+                      _buildTextField("Nama Pengirim", _pengirimController),
                       SizedBox(height: 10),
                       Text(
                         "Deskripsi Informasi:",
@@ -297,15 +289,7 @@ class _TambahLaporanState extends State<TambahLaporan> {
                         ),
                       ),
                       SizedBox(height: 10),
-                      TextField(
-                        controller: _alamatController,
-                        decoration: InputDecoration(
-                          labelText: "Alamat",
-                          border: OutlineInputBorder(),
-                          filled: true,
-                          fillColor: Colors.grey[200],
-                        ),
-                      ),
+                      _buildTextField("Alamat", _alamatController),
                       SizedBox(height: 10),
                       TextField(
                         controller: _keteranganController,
@@ -358,6 +342,34 @@ class _TambahLaporanState extends State<TambahLaporan> {
           ],
         ),
       ),
+    );
+  }
+
+  // Helper method for creating a TextField with consistent styling
+  Widget _buildTextField(String label, TextEditingController controller) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFFFF6F00),
+          ),
+        ),
+        SizedBox(height: 10),
+        TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            labelText: label,
+            border: OutlineInputBorder(),
+            filled: true,
+            fillColor: Colors.grey[200],
+          ),
+        ),
+        SizedBox(height: 10),
+      ],
     );
   }
 }

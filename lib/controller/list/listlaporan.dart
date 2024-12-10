@@ -34,6 +34,9 @@ class listlaporan extends StatelessWidget {
               gambar : laporan['imageUrl'],
               role : laporan['role'] ?? '',
               acc : acc,
+              kecamatan : laporan['kecamatan'],
+              kelurahan : laporan['kelurahan'],
+              time : laporan['tanggal']
              ),
             // Informasi dan validasi
             Container(
