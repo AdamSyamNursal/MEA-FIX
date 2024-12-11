@@ -1,92 +1,146 @@
 import 'package:flutter/material.dart';
-import 'package:mea/controller/appbar/burger/burger.dart';
-import 'package:mea/controller/appbar/lokasi.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 import 'package:mea/controller/arsip/dropdown.dart';
-import 'package:mea/controller/level.dart';
-import 'package:mea/controller/list/kosong.dart';
-import 'package:mea/controller/list/listlaporan.dart';
-import 'package:mea/view/all/dashboar.dart';
+import 'package:mea/model/modelaporan.dart';
 
-class arsip extends StatelessWidget {
+class Arsip extends StatelessWidget {
+  final PesanFilterController controller = Get.put(PesanFilterController());
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Daftar Laporan"),
         backgroundColor: Color(0xFFFF6F00),
-        body: Container(
-          child: Column(
-            children: [
-              SizedBox(height: 56),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 17.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-  height: 27,
-  width: 27,
-  child: GestureDetector(
-    onTap: () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => dashboard(), // Navigasi ke dashboard
-        ),
-      );
-    },
-    child: Icon(
-      Icons.keyboard_backspace_rounded,
-      color: Colors.white,
-    ),
-  ),
-),
-                    lokasisaatini(),
-                  ],
-                ),
-              ),
-              SizedBox(height: 10),
-              Expanded(
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        SizedBox(height: 10),
-                        Center(
-                          child: Text(
-                            "Arsip",
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            //DropdownBulan(),
-                            SizedBox(width: 10),
-                            //DropdownTahun(),
-                          ],
-                        ),
-                        SizedBox(height: 10),
-                        //Kosong(isilist: false),
-                        SizedBox(height: 10),
-                        
-                        
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
+      ),
+      body: Column(
+        children: [
+          // Dropdown untuk filter bulan dan tahun
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                DropdownBulan(),
+                DropdownTahun(),
+              ],
+            ),
           ),
-        ),
+
+          // Tampilan laporan berdasarkan filter
+          Expanded(
+            child: Obx(
+              () {
+                return StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('laporan')
+                      .where(
+                        'tanggal',
+                        isGreaterThanOrEqualTo: DateTime(
+                            controller.tahunTerpilih, controller.bulanTerpilih, 1),
+                      )
+                      .where(
+                        'tanggal',
+                        isLessThan: DateTime(
+                            controller.tahunTerpilih, controller.bulanTerpilih + 1, 1),
+                      )
+                      .where('arsip', isEqualTo: true) // Filter arsip == true
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Text(
+                          "Error loading data",
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      );
+                    }
+
+                    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                      return Center(
+                        child: Text(
+                          "No laporan found",
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                      );
+                    }
+
+                    // Mengubah dokumen Firestore menjadi list objek Laporan
+                    final List<Laporan> laporanList = snapshot.data!.docs.map((doc) {
+                      return Laporan.fromJson(
+                          doc.id, doc.data() as Map<String, dynamic>);
+                    }).toList();
+
+                    return ListView.builder(
+                      itemCount: laporanList.length,
+                      itemBuilder: (context, index) {
+                        final laporan = laporanList[index];
+
+                        return Card(
+                          margin: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                          child: ListTile(
+                            title: Text(
+                              laporan.keterangan,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Alamat: ${laporan.alamat}"),
+                                Text("Pengirim: ${laporan.pengirim}"),
+                                Text("Tanggal: ${laporan.tanggal.toLocal()}"),
+                              ],
+                            ),
+                            onTap: () {
+                              // ShowDialog untuk detail laporan
+                              showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  title: Text("Detail Laporan"),
+                                  content: SingleChildScrollView(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text("Nama Jalan: ${laporan.namaJalan}"),
+                                        Text("Kelurahan: ${laporan.kelurahan}"),
+                                        Text("Kecamatan: ${laporan.kecamatan}"),
+                                        Text("Kota: ${laporan.kota}"),
+                                        Text("Provinsi: ${laporan.provinsi}"),
+                                        Text("Kode Pos: ${laporan.kodePos}"),
+                                        Text("User ID: ${laporan.userId}"),
+                                        Text("Role: ${laporan.role}"),
+                                        Text("Keterangan: ${laporan.keterangan}"),
+                                        Text(
+                                            "Tanggal: ${laporan.tanggal.toLocal()}"),
+                                        Text("Pengirim: ${laporan.pengirim}"),
+                                      ],
+                                    ),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: Text("Close"),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      },
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
 }
-

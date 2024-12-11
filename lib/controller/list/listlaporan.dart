@@ -6,8 +6,9 @@ import 'package:mea/controller/list/sub/stacklaporan.dart';
 class listlaporan extends StatelessWidget {
   final List<Map<String, dynamic>> laporanList;
   final bool acc;
+  final String akses;
 
-  listlaporan({required this.laporanList , required this.acc});
+  listlaporan({required this.laporanList , required this.acc, required this.akses});
 
   Widget _buildLaporanItem(Map<String, dynamic> laporan) {
     return Padding(
@@ -36,7 +37,10 @@ class listlaporan extends StatelessWidget {
               acc : acc,
               kecamatan : laporan['kecamatan'],
               kelurahan : laporan['kelurahan'],
-              time : laporan['tanggal']
+              time : laporan['tanggal'], 
+              laporanId: laporan['id'],
+              akses : akses,
+              
              ),
             // Informasi dan validasi
             Container(
@@ -49,6 +53,7 @@ class listlaporan extends StatelessWidget {
                   Isilistvalid(
                     valid: laporan['valid'] ?? false,
                     idLaporan: laporan['id'] ?? '',
+                    akses : akses,
                   ),
                 ],
               ),

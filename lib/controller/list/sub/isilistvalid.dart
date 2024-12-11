@@ -5,8 +5,9 @@ import 'package:mea/view/all/detail.dart';
 class Isilistvalid extends StatelessWidget{
   final bool valid;
   final String idLaporan;
+  final String akses;
 
-  Isilistvalid ({required this.valid, required this.idLaporan});
+  Isilistvalid ({required this.valid, required this.idLaporan, required this.akses});
 
   Color backgroundColor(){
     if (valid == true){
@@ -40,7 +41,7 @@ class Isilistvalid extends StatelessWidget{
 Container(
   child: GestureDetector(
     onTap: () {
-      Get.to(() => Detail(idLaporan: idLaporan));
+      Get.to(() => Detail(idLaporan: idLaporan, akses : akses));
     },
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,

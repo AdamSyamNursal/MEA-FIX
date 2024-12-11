@@ -6,6 +6,7 @@ import 'package:mea/controller/list/kosong.dart';
 import 'package:mea/controller/list/listlaporan.dart';
 import 'package:mea/controller/appbar/burger/burger.dart';
 import 'package:mea/controller/auth/auth_controller.dart';
+import 'package:mea/view/all/akun.dart';
 import 'package:mea/view/all/laporan.dart';
 import 'package:mea/view/all/laporan_aktivitas.dart';
 import 'package:mea/view/all/login.dart';
@@ -14,6 +15,7 @@ import 'package:mea/view/all/profile.dart';
 import 'package:mea/view/all/rekomendasi.dart';
 import 'package:mea/view/all/tambahlaporan.dart';
 import 'package:mea/view/all/tambahpesan.dart';
+import 'package:mea/view/bpbd/akun.dart';
 import 'package:mea/view/floating.dart';
 
 class dashboard extends StatelessWidget {
@@ -97,8 +99,8 @@ class dashboard extends StatelessWidget {
     if (value == "Laporan"){
       Get.to(()=> ViewLaporan());
     }
-    if(value == "Rekomendasi"){
-      Get.to(()=>"");
+    if(value == "Akun"){
+      Get.to(()=>UserListView());
     }
   },
   itemBuilder: (BuildContext context) {
@@ -249,7 +251,7 @@ class dashboard extends StatelessWidget {
 
                               return Kosong(
                                 isilist: true,
-                                content: listlaporan(laporanList: laporanList, acc : authController.acc),
+                                content: listlaporan(laporanList: laporanList, acc : authController.acc, akses : authController.role),
                               );
                             },
                           ),

@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
             GetPage(name: '/splash', page: () => SplashScreen()),
             GetPage(name: '/tentang', page: () => Tentangaplikasi()),
             GetPage(name: '/hubungi', page: () => Hubungi()),
-            GetPage(name: '/arsip', page: () => arsip()),
+            GetPage(name: '/arsip', page: () => Arsip()),
             GetPage(name: '/register', page: () => Register()),
             GetPage(name: '/login', page: () => Login()),
             GetPage(name: '/profile', page: () => ProfilePage(userid: "")),

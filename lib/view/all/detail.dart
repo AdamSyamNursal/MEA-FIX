@@ -7,9 +7,10 @@ import 'package:mea/controller/list/detail/validdetail.dart';
 import 'package:mea/controller/list/sub/stacklaporan.dart';
 
 class Detail extends StatelessWidget {
-  final String idLaporan; // Tambahkan parameter ID laporan
+  final String idLaporan;
+  final String akses;
 
-  Detail({required this.idLaporan});
+  Detail({required this.idLaporan, required this.akses});
 
   @override
   Widget build(BuildContext context) {
@@ -85,13 +86,19 @@ class Detail extends StatelessWidget {
                           SizedBox(height: 10),
                           gambarstack(
                             role: data['role'] ?? '',
-                            acc: data ['acc'] ?? false,
+                            acc: data['acc'] ?? false,
                             gambar: data['imageUrl'] ?? '',
-                            kecamatan : data['kecamatan'],
-                            kelurahan : data['kelurahan'],
-                            time : data['tanggal']
-                          ), // Sesuaikan dengan data jika perlu
-                          maps(), // Tambahkan logika untuk menampilkan peta berdasarkan data
+                            kecamatan: data['kecamatan'],
+                            kelurahan: data['kelurahan'],
+                            time: data['tanggal'],
+                            laporanId: data['id'],
+                            akses: akses,
+                            
+                          ),
+                          maps(
+                            latitude: data['latitude'] ?? 0.0,
+                            longtitude: data['longtitude'] ?? 0.0,
+                          ),
                           SizedBox(height: 5),
                           detaillokasi(
                             id: data['id'] ?? 'Alamat tidak tersedia',

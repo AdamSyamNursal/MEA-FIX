@@ -3,14 +3,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:mea/controller/map/mapcontroller.dart';
+
 import 'package:mea/model/modelaporan.dart';
 
 class TambahLaporan extends StatefulWidget {
-  final String userId; // ID pengguna
-  final String role; // Role pengguna
+  final String userId;
+  final String role;
 
   TambahLaporan({required this.userId, required this.role});
 
@@ -22,7 +22,6 @@ class _TambahLaporanState extends State<TambahLaporan> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
-  // Controllers untuk setiap field input
   final TextEditingController _namaJalanController = TextEditingController();
   final TextEditingController _kelurahanController = TextEditingController();
   final TextEditingController _kecamatanController = TextEditingController();
@@ -33,34 +32,12 @@ class _TambahLaporanState extends State<TambahLaporan> {
   final TextEditingController _keteranganController = TextEditingController();
   final TextEditingController _pengirimController = TextEditingController();
 
-  File? _selectedImage; // Gambar yang dipilih
+  File? _selectedImage;
   LatLng? _currentPosition;
 
-  @override
-  void initState() {
-    super.initState();
-    _getCurrentLocation();
-  }
-
-  Future<void> _getCurrentLocation() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      await Geolocator.requestPermission();
-      return;
-    }
-
-    final permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever) {
-      await Geolocator.requestPermission();
-      return;
-    }
-
-    final position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
+  void _updateLocation(LatLng position) {
     setState(() {
-      _currentPosition = LatLng(position.latitude, position.longitude);
+      _currentPosition = position;
     });
   }
 
@@ -96,7 +73,7 @@ class _TambahLaporanState extends State<TambahLaporan> {
         ],
       ),
     );
-    return result ?? ImageSource.gallery; // Default ke galeri jika dibatalkan
+    return result ?? ImageSource.gallery;
   }
 
   Future<String?> _uploadImage() async {
@@ -119,8 +96,14 @@ class _TambahLaporanState extends State<TambahLaporan> {
   }
 
   Future<void> _kirimLaporan(BuildContext context) async {
+    if (_currentPosition == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Lokasi belum ditemukan!')),
+      );
+      return;
+    }
+
     try {
-      // Upload gambar jika ada
       final imageUrl = await _uploadImage();
 
       final laporan = Laporan(
@@ -138,9 +121,11 @@ class _TambahLaporanState extends State<TambahLaporan> {
         tanggal: DateTime.now(),
         valid: false,
         pengirim: _pengirimController.text.trim(),
+        longitude: _currentPosition?.longitude,
+        latitude: _currentPosition?.latitude,
+        arsip: false,
       );
 
-      // Tambahkan data ke Firestore
       final docRef = await _firestore.collection('laporan').add({
         ...laporan.toJson(),
         'imageUrl': imageUrl ?? '',
@@ -172,6 +157,7 @@ class _TambahLaporanState extends State<TambahLaporan> {
     _pengirimController.clear();
     setState(() {
       _selectedImage = null;
+      _currentPosition = null;
     });
   }
 
@@ -180,7 +166,7 @@ class _TambahLaporanState extends State<TambahLaporan> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Color(0xFFFF6F00),
-                body: Column(
+        body: Column(
           children: [
             SizedBox(height: 56),
             Container(
@@ -231,36 +217,7 @@ class _TambahLaporanState extends State<TambahLaporan> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-_currentPosition != null
-    ? Container(
-        height: 200,
-        child: FlutterMap(
-          options: MapOptions(
-  initialCenter: _currentPosition ?? LatLng(50.5, 30.51), // Lokasi default jika _currentPosition null
-  initialZoom: 15.0,
-),
-          children: [
-            TileLayer(
-              urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-              subdomains: ['a', 'b', 'c'],
-            ),
-MarkerLayer(
-  markers: [
-    Marker(
-      point: _currentPosition!,
-      child: Icon(
-        Icons.location_on,
-        color: Colors.red,
-        size: 40,
-      ),
-    ),
-  ],
-),
-          ],
-        ),
-      )
-    : Center(child: CircularProgressIndicator()),
-
+                      MapController(onLocationChanged: _updateLocation),
                       SizedBox(height: 10),
                       _buildTextField("Nama Jalan", _namaJalanController),
                       _buildTextField("Kelurahan", _kelurahanController),
@@ -345,7 +302,6 @@ MarkerLayer(
     );
   }
 
-  // Helper method for creating a TextField with consistent styling
   Widget _buildTextField(String label, TextEditingController controller) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
