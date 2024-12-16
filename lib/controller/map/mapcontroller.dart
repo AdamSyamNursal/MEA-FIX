@@ -36,8 +36,9 @@ class _MapControllerState extends State<MapController> {
     }
 
     final position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
+      locationSettings: LocationSettings(accuracy: LocationAccuracy.high),
     );
+
     setState(() {
       _currentPosition = LatLng(position.latitude, position.longitude);
     });
@@ -57,14 +58,14 @@ class _MapControllerState extends State<MapController> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Berhasil"),
-        content: Text("Lokasi berhasil diperbarui."),
+        title: const Text("Berhasil"),
+        content: const Text("Lokasi berhasil diperbarui."),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.pop(context); // Tutup dialog
             },
-            child: Text("OK"),
+            child: const Text("OK"),
           ),
         ],
       ),
@@ -74,7 +75,7 @@ class _MapControllerState extends State<MapController> {
   void _openFullScreenMap() {
     if (_currentPosition == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text("Lokasi belum tersedia. Cari lokasi terlebih dahulu."),
         ),
       );
@@ -85,8 +86,8 @@ class _MapControllerState extends State<MapController> {
       MaterialPageRoute(
         builder: (context) => Scaffold(
           appBar: AppBar(
-            title: Text('Peta Layar Penuh'),
-            backgroundColor: Colors.orange,
+            title: const Text('Peta Layar Penuh'),
+            backgroundColor: Color(0xFFFF6F00)
           ),
           body: FlutterMap(
             options: MapOptions(
@@ -114,8 +115,8 @@ MarkerLayer(
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: _getCurrentLocation,
-            child: Icon(Icons.my_location),
-            backgroundColor: Colors.orange,
+            child: const Icon(Icons.my_location),
+            backgroundColor: Color(0xFFFF6F00)
           ),
         ),
       ),
@@ -154,26 +155,26 @@ MarkerLayer(
 ),
                   ],
                 )
-              : Center(child: CircularProgressIndicator()),
+              : const Center(child: CircularProgressIndicator()),
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton.icon(
               onPressed: _getCurrentLocation,
-              icon: Icon(Icons.my_location),
-              label: Text('Cari Lokasi'),
+              icon: const Icon(Icons.my_location,color: Colors.white,),
+              label: const Text('Cari Lokasi', style: TextStyle(color: Colors.white),),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
+                backgroundColor: Color(0xFFFF6F00)
               ),
             ),
             ElevatedButton.icon(
               onPressed: _openFullScreenMap,
-              icon: Icon(Icons.fullscreen),
-              label: Text('Peta Layar Penuh'),
+              icon: const Icon(Icons.fullscreen, color: Colors.white,),
+              label: const Text('Peta Layar Penuh'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
+                backgroundColor: Color(0xFFFF6F00)
               ),
             ),
           ],
@@ -182,6 +183,7 @@ MarkerLayer(
     );
   }
 }
+
 
 
 

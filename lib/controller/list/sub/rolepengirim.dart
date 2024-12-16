@@ -20,7 +20,7 @@ class rolepengirim extends StatelessWidget {
         "gambar": "assets/icons/bpbd.png",
         "tulisan": Text(
           role,
-          style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Color(0xFFFF6F00), fontWeight: FontWeight.bold),
         ),
       };
     } else {

@@ -20,7 +20,7 @@ class Kosong extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Colors.orange,
+                    color: Color(0xFFFF6F00),
                   ),
                 ),
                 SizedBox(height: 20),

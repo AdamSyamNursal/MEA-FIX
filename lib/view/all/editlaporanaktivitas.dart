@@ -96,7 +96,7 @@ class EditLaporanAktivitas extends StatelessWidget {
                         child: ElevatedButton(
                           onPressed: () => _saveLaporan(context),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.orange,
+                            backgroundColor:Color(0xFFFF6F00),
                             padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),

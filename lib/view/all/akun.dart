@@ -16,7 +16,7 @@ class UserListView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Daftar Pengguna'),
-        backgroundColor: Colors.orange,
+        backgroundColor: Color(0xFFFF6F00)
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: usersCollection.snapshots(),
@@ -87,7 +87,7 @@ class UserDetailView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Detail Pengguna'),
-        backgroundColor: Colors.orange,
+        backgroundColor:Color(0xFFFF6F00)
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

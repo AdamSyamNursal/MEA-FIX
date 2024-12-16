@@ -1,70 +1,72 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mea/controller/appbar/burger/burger_animation.dart';
 
-class burger extends StatefulWidget {
-  @override
-  _burgerState createState() => _burgerState();
-}
-
-class _burgerState extends State<burger> with SingleTickerProviderStateMixin {
-  OverlayEntry? _overlayEntry;
-  late AnimationController _controller;
-  late Animation<Offset> _slideAnimation;
+class BurgerController extends GetxController with GetSingleTickerProviderStateMixin {
+  OverlayEntry? overlayEntry;
+  late AnimationController controller;
+  late Animation<Offset> slideAnimation;
 
   @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
+  void onInit() {
+    super.onInit();
+    controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 300),
     );
-    _slideAnimation = Tween<Offset>(
-      begin: Offset(0, -1), // Mulai dari luar layar atas
-      end: Offset(0, 0),
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+    slideAnimation = Tween<Offset>(
+      begin: const Offset(0, -1),
+      end: const Offset(0, 0),
+    ).animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut));
   }
 
   @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+  void onClose() {
+    controller.dispose();
+    super.onClose();
   }
 
-  void _showSidebar() {
-    _overlayEntry = OverlayEntry(
+  void showSidebar(BuildContext context) {
+    overlayEntry = OverlayEntry(
       builder: (context) => Stack(
         children: [
           GestureDetector(
-            onTap: _closeSidebar,
+            onTap: closeSidebar,
             child: Container(
-              color: Colors.black54, // Background semi-transparan
+              color: Colors.black54,
             ),
           ),
           SlideTransition(
-            position: _slideAnimation,
-            child: Sidebar(onClose: _closeSidebar),
+            position: slideAnimation,
+            child: Sidebar(onClose: closeSidebar),
           ),
         ],
       ),
     );
-    Overlay.of(context)!.insert(_overlayEntry!);
-    _controller.forward();
+    Overlay.of(context).insert(overlayEntry!);
+    controller.forward();
   }
 
-  void _closeSidebar() {
-    _controller.reverse().then((_) {
-      _overlayEntry?.remove();
-      _overlayEntry = null;
+  void closeSidebar() {
+    controller.reverse().then((_) {
+      overlayEntry?.remove();
+      overlayEntry = null;
     });
   }
+}
+
+class Burger extends StatelessWidget {
+  const Burger({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final BurgerController controller = Get.put(BurgerController());
+
+    return SizedBox(
       height: 21,
       width: 23,
       child: GestureDetector(
-        onTap: _showSidebar,
+        onTap: () => controller.showSidebar(context),
         child: Image.asset('assets/icons/burger.png'),
       ),
     );

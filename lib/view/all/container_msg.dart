@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mea/view/all/detailpesan.dart'; // Import halaman DetailPesan
 
 class ContainerMsg extends StatelessWidget {
   final String namaPengirim;

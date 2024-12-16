@@ -13,8 +13,8 @@ class maps extends StatelessWidget {
       MaterialPageRoute(
         builder: (context) => Scaffold(
           appBar: AppBar(
-            title: Text('Peta Layar Penuh'),
-            backgroundColor: Colors.orange,
+            title: Text('Peta Layar Penuh', style: TextStyle(color: Colors.white),),
+            backgroundColor: Color(0xFFFF6F00),
           ),
           body: FlutterMap(
             options: MapOptions(
@@ -96,10 +96,10 @@ class maps extends StatelessWidget {
           SizedBox(height: 10),
           ElevatedButton.icon(
             onPressed: () => _openFullScreenMap(context), // Tombol untuk buka fullscreen
-            icon: Icon(Icons.fullscreen),
-            label: Text('Lihat Layar Penuh'),
+            icon: Icon(Icons.fullscreen,color: Colors.white,),
+            label: Text('Lihat Layar Penuh', style: TextStyle(color: Colors.white),),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.orange,
+              backgroundColor: Color(0xFFFF6F00),
             ),
           ),
         ],

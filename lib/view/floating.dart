@@ -14,7 +14,7 @@ class FloatingNavbar extends StatelessWidget {
       child: Container(
         height: 70,
         decoration: BoxDecoration(
-          color: Colors.orange,
+          color: Color(0xFFFF6F00),
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(

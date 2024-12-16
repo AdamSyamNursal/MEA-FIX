@@ -1,4 +1,5 @@
 import 'dart:convert'; // Import untuk JSON parsing
+import 'dart:developer'; // Import untuk logging
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
@@ -9,7 +10,7 @@ class AuthService {
       final userJson = json.encode(user);
       await prefs.setString('userData', userJson);
     } catch (e) {
-      print("Error saving user data: $e");
+      log("Error saving user data: $e", name: "AuthService"); // Menggunakan log
     }
   }
 
@@ -22,7 +23,7 @@ class AuthService {
         return Map<String, dynamic>.from(json.decode(userJson));
       }
     } catch (e) {
-      print("Error getting user data: $e");
+      log("Error getting user data: $e", name: "AuthService"); // Menggunakan log
     }
     return null;
   }
@@ -32,7 +33,7 @@ class AuthService {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove('userData');
     } catch (e) {
-      print("Error clearing user data: $e");
+      log("Error clearing user data: $e", name: "AuthService"); // Menggunakan log
     }
   }
 }

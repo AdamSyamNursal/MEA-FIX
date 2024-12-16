@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mea/controller/appbar/burger/burger.dart';
-import 'package:mea/controller/appbar/lokasi.dart';
 import 'package:mea/view/all/dashboar.dart';
 
 class Tentangaplikasi extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return SafeArea(child: Scaffold(
       backgroundColor: Color(0xFFFF6F00),
       body: Container(
@@ -39,7 +36,7 @@ Container(
     ),
   ),
 ),
-                lokasisaatini(),
+                
               ],
             ),
             ),

@@ -14,17 +14,12 @@ import 'package:mea/view/all/pesan.dart';
 import 'package:mea/view/all/profile.dart';
 import 'package:mea/view/all/rekomendasi.dart';
 import 'package:mea/view/all/tambahlaporan.dart';
-import 'package:mea/view/all/tambahpesan.dart';
-import 'package:mea/view/bpbd/akun.dart';
 import 'package:mea/view/floating.dart';
 
 class dashboard extends StatelessWidget {
   final AuthController authController = Get.find<AuthController>();
   final LevelController levelController = Get.put(LevelController()); 
 
-  void _handleNotificationAction(String value) {
-    print("Notifikasi: $value");
-  }
 
   
   void _showEditDropdown(BuildContext context) {
@@ -87,7 +82,7 @@ class dashboard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      burger(),
+                      Burger(),
                       PopupMenuButton<String>(
   onSelected: (String value) {
     if (value == "Rekomendasi") {
@@ -133,7 +128,7 @@ class dashboard extends StatelessWidget {
   child: Container(
     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6), // Ukuran lebih kecil
     decoration: BoxDecoration(
-      color: Colors.orange, // Warna tombol
+      color: Color(0xFFFF6F00),
       borderRadius: BorderRadius.circular(6), // Sudut lebih kecil
       boxShadow: [
         BoxShadow(
@@ -196,7 +191,7 @@ class dashboard extends StatelessWidget {
                                     style: TextStyle(color: Colors.white),
                                   ),
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.orange,
+                                    backgroundColor: Color(0xFFFF6F00)
                                   ),
                                 ),
                               SizedBox(width: authController.role == "BPBD" && authController.acc ? 10 : 0),
@@ -204,21 +199,41 @@ class dashboard extends StatelessWidget {
                                 onTap: () {
                                   Get.to(() => LaporanAktivitas(role: authController.role, acc: authController.acc));
                                 }, 
-                                child: Container(
-                                  height: 34,
-                                  width: 84,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    border: Border.all(color: Colors.black),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text("Detail"),
-                                      Icon(Icons.arrow_right_sharp, size: 30),
-                                    ],
-                                  ),
-                                ),
+child: Container(
+  height: 40, // Sedikit lebih tinggi untuk tampilan yang lebih seimbang
+  width: 100, // Lebih lebar untuk ruang teks dan ikon
+  decoration: BoxDecoration(
+    color: Color(0xFFFF6F00), // Warna utama
+    borderRadius: BorderRadius.circular(10), // Sudut melengkung
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black.withOpacity(0.2), // Warna bayangan
+        offset: Offset(0, 2), // Posisi bayangan
+        blurRadius: 4, // Tingkat blur bayangan
+      ),
+    ],
+  ),
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Text(
+        "Detail",
+        style: TextStyle(
+          color: Colors.white, // Teks berwarna putih untuk kontras
+          fontWeight: FontWeight.bold, // Teks tebal
+          fontSize: 16, // Ukuran font yang lebih besar
+        ),
+      ),
+      const SizedBox(width: 4), // Jarak antara teks dan ikon
+      Icon(
+        Icons.arrow_right_sharp,
+        color: Colors.white, // Ikon putih untuk mencocokkan teks
+        size: 24, // Ukuran ikon lebih kecil
+      ),
+    ],
+  ),
+),
+
                               ),
                             ],
                           ),
@@ -229,6 +244,7 @@ class dashboard extends StatelessWidget {
                           child: StreamBuilder<QuerySnapshot>(
                             stream: FirebaseFirestore.instance
                                 .collection('laporan')
+                                .where('arsip', isEqualTo: false)
                                 .orderBy('tanggal', descending: true)
                                 .snapshots(),
                             builder: (context, snapshot) {

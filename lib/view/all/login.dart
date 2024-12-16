@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:mea/controller/auth/auth_controller.dart';
 import 'package:mea/view/all/dashboar.dart';
 import 'package:mea/view/all/register.dart';
-import 'package:mea/view/all/profile.dart';
+
 
 class Login extends StatefulWidget {
   @override
@@ -178,7 +178,7 @@ class _LoginState extends State<Login> {
                         },
                         child: Text(
                           "Daftar",
-                          style: TextStyle(color: Colors.orange),
+                          style: TextStyle(color: Color(0xFFFF6F00)),
                         ),
                         style: OutlinedButton.styleFrom(
                           minimumSize: Size(300, 45),

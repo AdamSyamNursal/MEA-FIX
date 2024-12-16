@@ -98,7 +98,7 @@ class LaporanAktivitas extends StatelessWidget {
         child: Container(
           padding: EdgeInsets.all(5),
           decoration: BoxDecoration(
-            color: Colors.orange,
+            color: Color(0xFFFF6F00),
             borderRadius: BorderRadius.circular(5),
           ),
           child: Icon(

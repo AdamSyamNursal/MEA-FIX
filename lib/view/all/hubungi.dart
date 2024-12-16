@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mea/controller/appbar/burger/burger.dart';
-import 'package:mea/controller/appbar/lokasi.dart';
 import 'package:mea/view/all/dashboar.dart';
 
 class Hubungi extends StatelessWidget {
@@ -37,7 +35,7 @@ Container(
     ),
   ),
 ),
-                    lokasisaatini(),
+                    
                   ],
                 ),
               ),

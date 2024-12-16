@@ -101,7 +101,7 @@ class _DetailPesanState extends State<DetailPesan> {
             Container(
               padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.orange[50],
+                color: Color(0xFFFF6F00),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: roleColor, width: 1.5),
               ),
@@ -138,7 +138,7 @@ class _DetailPesanState extends State<DetailPesan> {
               decoration: BoxDecoration(
                 color: Colors.grey[100],
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.orange, width: 1.5),
+                border: Border.all(color: Color(0xFFFF6F00), width: 1.5),
               ),
               child: Text(
                 currentBalasan.isNotEmpty

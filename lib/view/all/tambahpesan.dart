@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mea/model/modelpesan.dart';
-import 'package:mea/view/all/dashboar.dart';
 import 'package:mea/view/all/pesan.dart'; // Import halaman Pesan
 
 class Tambahpesan extends StatelessWidget {
@@ -177,11 +176,11 @@ class Tambahpesan extends StatelessWidget {
                             width: 150,
                             height: 50,
                             decoration: BoxDecoration(
-                              color: Colors.orange,
+                              color: Color(0xFFFF6F00),
                               borderRadius: BorderRadius.circular(25),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.orange.withOpacity(0.4),
+                                  color: Color(0xFFFF6F00).withOpacity(0.4),
                                   spreadRadius: 3,
                                   blurRadius: 5,
                                   offset: Offset(0, 3),

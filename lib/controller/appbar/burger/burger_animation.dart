@@ -5,7 +5,7 @@ import 'package:mea/controller/appbar/burger/container_burger.dart';
 class Sidebar extends StatelessWidget {
   final VoidCallback onClose;
 
-  Sidebar({required this.onClose});
+  const Sidebar({super.key, required this.onClose}); 
 
   @override
   Widget build(BuildContext context) {
@@ -14,27 +14,27 @@ class Sidebar extends StatelessWidget {
       child: Container(
         width: 412,
         height: 330,
-        padding: EdgeInsets.only(top: 56), // Sesuaikan jarak dari atas
-        color: Color(0xFFFF6F00),
+        padding: const EdgeInsets.only(top: 56), 
+        color: const Color(0xFFFF6F00), 
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(height: 30),
+            const SizedBox(height: 30), 
             ContainerBurger(
               texline: "Tentang Aplikasi",
               onTap: () async {
                 onClose(); // Menutup sidebar
-                await Future.delayed(Duration(milliseconds: 300)); // Tunggu animasi selesai
-                Get.toNamed('/tentang'); // Navigasi dengan GetX
+                await Future.delayed(const Duration(milliseconds: 300)); 
+                Get.toNamed('/tentang'); 
               },
             ),
             ContainerBurger(
               texline: "Kontak BPBD",
               onTap: () async {
                 onClose();
-                await Future.delayed(Duration(milliseconds: 300));
+                await Future.delayed(const Duration(milliseconds: 300)); 
                 Get.toNamed('/hubungi');
               },
             ),
@@ -42,12 +42,12 @@ class Sidebar extends StatelessWidget {
               texline: "Arsip",
               onTap: () async {
                 onClose();
-                await Future.delayed(Duration(milliseconds: 300));
+                await Future.delayed(const Duration(milliseconds: 300)); 
                 Get.toNamed('/arsip');
               },
             ),
-            SizedBox(height: 10),
-            Container(
+            const SizedBox(height: 10), 
+            SizedBox(
               height: 84,
               width: 84,
               child: Center(

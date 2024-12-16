@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer'; // Untuk logging
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mea/view/all/login.dart';
@@ -30,7 +31,7 @@ class AuthController extends GetxController {
         isLoggedIn.value = false; // Tidak ada data
       }
     } catch (e) {
-      print("Error checking login status: $e");
+      log("Error checking login status: $e"); // Menggunakan log
       isLoggedIn.value = false; // Default ke tidak login
     }
   }
@@ -47,7 +48,7 @@ class AuthController extends GetxController {
       // Navigasi ke halaman ProfilePage berdasarkan userId
       Get.off(() => ProfilePage(userid: userId));
     } catch (e) {
-      print("Error during login: $e");
+      log("Error during login: $e"); // Menggunakan log
     }
   }
 
@@ -62,7 +63,7 @@ class AuthController extends GetxController {
       // Navigasi ke halaman login
       Get.offAll(() => Login());
     } catch (e) {
-      print("Error during logout: $e");
+      log("Error during logout: $e"); // Menggunakan log
     }
   }
 }
