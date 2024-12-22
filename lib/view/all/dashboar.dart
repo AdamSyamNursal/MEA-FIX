@@ -240,7 +240,7 @@ child: Container(
                         ),
                         SizedBox(height: 10),
                         Container(
-                          height: 420,
+                          height: 380,
                           child: StreamBuilder<QuerySnapshot>(
                             stream: FirebaseFirestore.instance
                                 .collection('laporan')

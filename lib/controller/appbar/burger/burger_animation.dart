@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mea/controller/appbar/burger/container_burger.dart';
+import 'package:mea/view/all/arsip.dart';
+import 'package:mea/view/all/hubungi.dart';
+import 'package:mea/view/all/tentangaplikasi.dart';
 
 class Sidebar extends StatelessWidget {
   final VoidCallback onClose;
@@ -27,7 +30,7 @@ class Sidebar extends StatelessWidget {
               onTap: () async {
                 onClose(); // Menutup sidebar
                 await Future.delayed(const Duration(milliseconds: 300)); 
-                Get.toNamed('/tentang'); 
+                Get.to(() => Tentangaplikasi()); 
               },
             ),
             ContainerBurger(
@@ -35,7 +38,7 @@ class Sidebar extends StatelessWidget {
               onTap: () async {
                 onClose();
                 await Future.delayed(const Duration(milliseconds: 300)); 
-                Get.toNamed('/hubungi');
+                Get.to(() => Hubungi());
               },
             ),
             ContainerBurger(
@@ -43,7 +46,7 @@ class Sidebar extends StatelessWidget {
               onTap: () async {
                 onClose();
                 await Future.delayed(const Duration(milliseconds: 300)); 
-                Get.toNamed('/arsip');
+                Get.to(() => Arsip());
               },
             ),
             const SizedBox(height: 10), 

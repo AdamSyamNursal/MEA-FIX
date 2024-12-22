@@ -2,12 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mea/controller/auth/auth_controller.dart';
-import 'package:mea/view/all/register.dart';
 import 'package:mea/view/all/splash.dart';
-import 'package:mea/view/all/tentangaplikasi.dart';
-import 'package:mea/view/all/hubungi.dart';
-import 'package:mea/view/all/arsip.dart';
-import 'package:mea/view/all/login.dart';
 import 'package:mea/view/all/profile.dart';
 
 void main() async {
@@ -43,15 +38,6 @@ class MyApp extends StatelessWidget {
                 ? ProfilePage(userid: authController.userId) // Navigasi menggunakan userId
                 : SplashScreen();
           }),
-          getPages: [
-            GetPage(name: '/splash', page: () => SplashScreen()),
-            GetPage(name: '/tentang', page: () => Tentangaplikasi()),
-            GetPage(name: '/hubungi', page: () => Hubungi()),
-            GetPage(name: '/arsip', page: () => Arsip()),
-            GetPage(name: '/register', page: () => Register()),
-            GetPage(name: '/login', page: () => Login()),
-            GetPage(name: '/profile', page: () => ProfilePage(userid: "")),
-          ],
         );
       },
     );

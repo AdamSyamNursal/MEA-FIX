@@ -3,53 +3,41 @@ import 'package:flutter/material.dart';
 class Level extends StatelessWidget {
   final int level;
 
-  const Level({Key? key, required this.level}) : super(key: key); // Menambahkan 'const' dan parameter 'key'
+  const Level({Key? key, required this.level}) : super(key: key);
 
+  // Warna latar belakang berdasarkan level
   Color getBackground() {
     switch (level) {
       case 4:
-        return const Color(0xFFCA0E00);
+        return const Color(0xFFCA0E00); // Merah
       case 3:
-        return const Color(0xFFFF6F00);
+        return const Color(0xFFFF6F00); // Oranye
       case 2:
-        return const Color(0xFFFFD700);
+        return const Color(0xFFE6A600); // Kuning
       case 1:
-        return const Color(0xFF03A9F4);
+        return const Color(0xFF03A9F4); // Biru
       default:
-        return const Color(0xFFFFFFFF);
+        return const Color(0xFFFFFFFF); // Putih
     }
   }
 
+  // Deskripsi level
   String getLevelDescription() {
     switch (level) {
       case 4:
-        return "Level IV";
+        return "Level IV - AWAS";
       case 3:
-        return "Level III";
+        return "Level III - SIAGA";
       case 2:
-        return "Level II";
+        return "Level II - WASPADA";
       case 1:
-        return "Level I";
+        return "Level I - NORMAL";
       default:
         return "error";
     }
   }
 
-  String getLevelAlert() {
-    switch (level) {
-      case 4:
-        return "AWAS";
-      case 3:
-        return "SIAGA";
-      case 2:
-        return "WASPADA";
-      case 1:
-        return "NORMAL";
-      default:
-        return "error";
-    }
-  }
-
+  // Ikon berdasarkan level
   String getIconPath() {
     switch (level) {
       case 4:
@@ -65,63 +53,92 @@ class Level extends StatelessWidget {
     }
   }
 
+  // Deskripsi tambahan berdasarkan level
+  String getAdditionalDescription() {
+    switch (level) {
+      case 4:
+        return "Ancaman bahaya besar. Segera ikuti arahan evakuasi!";
+      case 3:
+        return "Tingkatkan kewaspadaan dan persiapkan diri untuk evakuasi.";
+      case 2:
+        return "Pantau informasi terbaru dari otoritas terkait.";
+      case 1:
+        return "Kondisi normal. Tetap waspada.";
+      default:
+        return "Error";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 188,
-      width: 365,
+      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: getBackground(),
         borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              Positioned(
-                bottom: 3,
-                child: Container(
-                  width: 100, // Adjust to match text width
-                  height: 3, // Thickness of the underline
-                  color: Colors.white, // Color of the underline
-                ),
-              ),
-              Text(
-                getLevelDescription(),
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
-                ),
-              ),
-            ],
+          // Level Title
+          Text(
+            getLevelDescription(),
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 24,
+            ),
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 17.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  getLevelAlert(),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 48,
-                  ),
-                ),
-                const SizedBox(width: 5), // Mengganti padding dengan SizedBox
-                SizedBox(
-                  height: 60,
-                  width: 70,
-                  child: Image.asset(getIconPath()),
-                ),
-              ],
+          const SizedBox(height: 10),
+          // Icon
+          SizedBox(
+            height: 70,
+            width: 70,
+            child: Image.asset(getIconPath()),
+          ),
+          const SizedBox(height: 10),
+          // Additional Description
+          Text(
+            getAdditionalDescription(),
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 16,
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class LevelScreen extends StatelessWidget {
+  const LevelScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Level Status"),
+        backgroundColor: Colors.blueGrey,
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: const [
+            Level(level: 4),
+            Level(level: 3),
+            Level(level: 2),
+            Level(level: 1),
+          ],
+        ),
       ),
     );
   }

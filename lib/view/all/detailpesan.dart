@@ -207,7 +207,7 @@ class DetailPesanController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    currentBalasan.value = pesan.balasan ?? '';
+    currentBalasan.value = pesan.balasan;
   }
 
   Future<void> kirimBalasan(String replyText) async {
