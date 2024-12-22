@@ -50,27 +50,21 @@ class _MapControllerState extends State<MapController> {
 
     // Popup pemberitahuan
     if (mounted) {
-      _showLocationPopup();
+      _showLocationSnackbar(context);
     }
   }
 
-  void _showLocationPopup() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Berhasil"),
-        content: const Text("Lokasi berhasil diperbarui."),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context); // Tutup dialog
-            },
-            child: const Text("OK"),
-          ),
-        ],
-      ),
-    );
-  }
+void _showLocationSnackbar(BuildContext context) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: const Text("Lokasi berhasil diperbarui."),
+      duration: const Duration(seconds: 3),
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: Colors.green,
+    ),
+  );
+}
+
 
   void _openFullScreenMap() {
     if (_currentPosition == null) {

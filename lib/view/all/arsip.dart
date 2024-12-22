@@ -85,6 +85,34 @@ class Arsip extends StatelessWidget {
                         return Card(
                           margin: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                           child: ListTile(
+leading: GestureDetector(
+  onTap: () {
+    // Menampilkan gambar dalam mode fullscreen
+    showDialog(
+      context: context,
+      builder: (_) => Dialog(
+        child: Container(
+          child: Image.network(
+            laporan.imageUrl ?? 'https://example.com/default-image.jpg', // Default jika null
+            fit: BoxFit.cover,
+          ),
+        ),
+      ),
+    );
+  },
+  child: Container(
+    width: 60,
+    height: 60,
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(8.0),
+      image: DecorationImage(
+        image: NetworkImage(laporan.imageUrl ?? 'https://example.com/default-image.jpg'), // Default jika null
+        fit: BoxFit.cover,
+      ),
+    ),
+  ),
+),
+
                             title: Text(
                               laporan.keterangan,
                               style: TextStyle(fontWeight: FontWeight.bold),

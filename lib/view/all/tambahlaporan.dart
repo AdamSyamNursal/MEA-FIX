@@ -24,9 +24,24 @@ class TambahLaporanController extends GetxController {
 
   Rx<File?> selectedImage = Rx<File?>(null);
   Rx<LatLng?> currentPosition = Rx<LatLng?>(null);
+  RxBool isFormValid = false.obs;
 
   void updateLocation(LatLng position) {
     currentPosition.value = position;
+    _validateForm();
+  }
+
+  void _validateForm() {
+    isFormValid.value =
+        namaJalanController.text.isNotEmpty &&
+        kelurahanController.text.isNotEmpty &&
+        kecamatanController.text.isNotEmpty &&
+        kotaController.text.isNotEmpty &&
+        provinsiController.text.isNotEmpty &&
+        kodePosController.text.isNotEmpty &&
+        alamatController.text.isNotEmpty &&
+        keteranganController.text.isNotEmpty &&
+        pengirimController.text.isNotEmpty;
   }
 
   Future<void> pickImage() async {
@@ -43,25 +58,63 @@ class TambahLaporanController extends GetxController {
     if (pickedFile != null) {
       selectedImage.value = File(pickedFile.path);
     }
+    _validateForm();
   }
 
   Future<ImageSource?> _selectImageSource() async {
-    return await Get.defaultDialog<ImageSource>(
-      title: 'Pilih Sumber Gambar',
-      content: Column(
-        children: [
-          ElevatedButton(
-            onPressed: () => Get.back(result: ImageSource.camera),
-            child: Text('Kamera'),
+    return await showDialog<ImageSource>(
+      context: Get.context!,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
           ),
-          ElevatedButton(
-            onPressed: () => Get.back(result: ImageSource.gallery),
-            child: Text('Galeri'),
+          title: Text(
+            'Pilih Sumber Gambar',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
           ),
-        ],
-      ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ElevatedButton.icon(
+                onPressed: () => Navigator.of(context).pop(ImageSource.camera),
+                icon: Icon(Icons.camera_alt, color: Colors.white),
+                label: Text('Kamera',style: TextStyle(
+                  color: Colors.white
+                ),),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFFFF6F00),
+                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
+              ElevatedButton.icon(
+                onPressed: () => Navigator.of(context).pop(ImageSource.gallery),
+                icon: Icon(Icons.photo, color: Colors.white),
+                label: Text('Galeri',style: TextStyle(
+                  color: Colors.white
+                ),),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFFFF6F00),
+                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
+
 
   Future<String?> _uploadImage() async {
     if (selectedImage.value == null) return null;
@@ -107,6 +160,7 @@ class TambahLaporanController extends GetxController {
         longitude: currentPosition.value?.longitude,
         latitude: currentPosition.value?.latitude,
         arsip: false,
+        imageUrl: '',
       );
 
       final docRef = await _firestore.collection('laporan').add({
@@ -136,6 +190,7 @@ class TambahLaporanController extends GetxController {
     pengirimController.clear();
     selectedImage.value = null;
     currentPosition.value = null;
+    _validateForm();
   }
 }
 
@@ -163,13 +218,9 @@ class TambahLaporanView extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () => Get.back(),
-                    child: Container(
-                      height: 27,
-                      width: 27,
-                      child: Icon(
-                        Icons.keyboard_backspace_rounded,
-                        color: Colors.white,
-                      ),
+                    child: Icon(
+                      Icons.keyboard_backspace_rounded,
+                      color: Colors.white,
                     ),
                   ),
                   Expanded(
@@ -210,48 +261,12 @@ class TambahLaporanView extends StatelessWidget {
                       _buildTextField("Provinsi", controller.provinsiController),
                       _buildTextField("Kode Pos", controller.kodePosController),
                       SizedBox(height: 10),
-                      Text(
-                        "Pengirim:",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFFFF6F00),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      _buildTextField("Nama Pengirim", controller.pengirimController),
-                      SizedBox(height: 10),
-                      Text(
-                        "Deskripsi Informasi:",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFFFF6F00),
-                        ),
-                      ),
+                      _buildTextField("Pengirim", controller.pengirimController),
                       SizedBox(height: 10),
                       _buildTextField("Alamat", controller.alamatController),
                       SizedBox(height: 10),
-                      TextField(
-                        controller: controller.keteranganController,
-                        maxLines: 5,
-                        decoration: InputDecoration(
-                          labelText: "Keterangan",
-                          border: OutlineInputBorder(),
-                          filled: true,
-                          fillColor: Colors.grey[200],
-                        ),
-                      ),
+                      _buildTextField("Keterangan", controller.keteranganController, maxLines: 5),
                       SizedBox(height: 20),
-                      Text(
-                        "Pilih Gambar:",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFFFF6F00),
-                        ),
-                      ),
-                      SizedBox(height: 10),
                       ElevatedButton(
                         onPressed: () => controller.pickImage(),
                         child: Text('Pilih Gambar'),
@@ -261,20 +276,24 @@ class TambahLaporanView extends StatelessWidget {
                           ? Image.file(controller.selectedImage.value!, height: 150)
                           : Text('Belum ada gambar yang dipilih')),
                       SizedBox(height: 20),
-                      Container(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () => controller.kirimLaporan(userId, role),
-                          child: Text(
-                            "Kirim Laporan",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFFFF6F00),
-                            padding: EdgeInsets.symmetric(vertical: 16),
-                          ),
-                        ),
-                      ),
+                      Obx(() => Container(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: controller.isFormValid.value
+                                  ? () => controller.kirimLaporan(userId, role)
+                                  : null,
+                              child: Text(
+                                "Kirim Laporan",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: controller.isFormValid.value
+                                    ? Color(0xFFFF6F00)
+                                    : Colors.grey,
+                                padding: EdgeInsets.symmetric(vertical: 16),
+                              ),
+                            ),
+                          )),
                     ],
                   ),
                 ),
@@ -286,7 +305,7 @@ class TambahLaporanView extends StatelessWidget {
     );
   }
 
-  Widget _buildTextField(String label, TextEditingController controller) {
+  Widget _buildTextField(String label, TextEditingController controller, {int maxLines = 1}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -301,8 +320,9 @@ class TambahLaporanView extends StatelessWidget {
         SizedBox(height: 10),
         TextField(
           controller: controller,
+          maxLines: maxLines,
           decoration: InputDecoration(
-            labelText: label,
+            
             border: OutlineInputBorder(),
             filled: true,
             fillColor: Colors.grey[200],
@@ -313,5 +333,3 @@ class TambahLaporanView extends StatelessWidget {
     );
   }
 }
-
-

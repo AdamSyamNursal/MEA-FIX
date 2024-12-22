@@ -162,7 +162,7 @@ class dashboard extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 10,),
                 Expanded(
                   child: Container(
                     width: double.infinity,
@@ -240,7 +240,7 @@ child: Container(
                         ),
                         SizedBox(height: 10),
                         Container(
-                          height: 380,
+                          height: 350,
                           child: StreamBuilder<QuerySnapshot>(
                             stream: FirebaseFirestore.instance
                                 .collection('laporan')

@@ -25,13 +25,13 @@ class Level extends StatelessWidget {
   String getLevelDescription() {
     switch (level) {
       case 4:
-        return "Level IV - AWAS";
+        return "Level IV - AWAS\n(Gunung Marapi)";
       case 3:
-        return "Level III - SIAGA";
+        return "Level III - SIAGA\n(Gunung Marapi)";
       case 2:
-        return "Level II - WASPADA";
+        return "Level II - WASPADA\n(Gunung Marapi)";
       case 1:
-        return "Level I - NORMAL";
+        return "Level I - NORMAL\n(Gunung Marapi)";
       default:
         return "error";
     }

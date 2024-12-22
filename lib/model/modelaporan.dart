@@ -15,7 +15,7 @@ class Laporan {
   final DateTime tanggal;
   final bool valid;
   final String pengirim;
-  final String? imageUrl; // Tambahkan properti untuk URL gambar (opsional)
+  final String imageUrl; // Tambahkan properti untuk URL gambar (opsional)
   final double? longitude; // Tambahkan properti longitude
   final double? latitude;  // Tambahkan properti latitude
   final bool arsip;
@@ -35,7 +35,7 @@ class Laporan {
     required this.tanggal,
     required this.valid,
     required this.pengirim,
-    this.imageUrl, // URL gambar opsional
+    required this.imageUrl, // URL gambar opsional
     this.latitude,
     this.longitude,
     required this.arsip,

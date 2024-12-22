@@ -2,8 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mea/controller/auth/auth_controller.dart';
+import 'package:mea/view/all/dashboar.dart';
 import 'package:mea/view/all/splash.dart';
-import 'package:mea/view/all/profile.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
           home: Obx(() {
             // Cek status login dan navigasi
             return authController.isLoggedIn.value
-                ? ProfilePage(userid: authController.userId) // Navigasi menggunakan userId
+                ? dashboard() // Navigasi menggunakan userId
                 : SplashScreen();
           }),
         );

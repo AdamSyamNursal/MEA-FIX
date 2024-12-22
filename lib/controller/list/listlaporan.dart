@@ -28,38 +28,39 @@ class listlaporan extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
         ),
-        child: Column(
-          children: [
-            // Gambar stack
-            gambarstack(
-              gambar : laporan['imageUrl'],
-              role : laporan['role'] ?? '',
-              acc : acc,
-              kecamatan : laporan['kecamatan'],
-              kelurahan : laporan['kelurahan'],
-              time : laporan['tanggal'], 
-              laporanId: laporan['id'],
-              akses : akses,
-              
-             ),
-            // Informasi dan validasi
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 17.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  isilistshor(content: laporan['keterangan'] ?? 'Tidak ada keterangan'),
-                  Isilistvalid(
-                    valid: laporan['valid'] ?? false,
-                    idLaporan: laporan['id'] ?? '',
-                    akses : akses,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+        child:Column(
+  mainAxisSize: MainAxisSize.min, // Menghindari overflow dengan ukuran minimal
+  children: [
+    Expanded(
+      child: gambarstack(
+        gambar: laporan['imageUrl'],
+        role: laporan['role'] ?? '',
+        acc: acc,
+        kecamatan: laporan['kecamatan'],
+        kelurahan: laporan['kelurahan'],
+        time: laporan['tanggal'], 
+        laporanId: laporan['id'],
+        akses: akses,
+      ),
+    ),
+    Container(
+      padding: const EdgeInsets.symmetric(horizontal: 17.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          isilistshor(content: laporan['keterangan'] ?? 'Tidak ada keterangan'),
+          Isilistvalid(
+            valid: laporan['valid'] ?? false,
+            idLaporan: laporan['id'] ?? '',
+            akses: akses,
+          ),
+        ],
+      ),
+    ),
+  ],
+),
+
       ),
     );
   }

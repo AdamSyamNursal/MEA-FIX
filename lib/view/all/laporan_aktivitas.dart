@@ -9,6 +9,7 @@ class LaporanAktivitas extends StatelessWidget {
   final bool acc;
 
   LaporanAktivitas({required this.role, required this.acc});
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -16,124 +17,143 @@ class LaporanAktivitas extends StatelessWidget {
         backgroundColor: Color(0xFFFF6F00),
         body: Column(
           children: [
-            SizedBox(height: 56),
+            // Header
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 17.0),
+              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+              decoration: BoxDecoration(
+                color: Color(0xFFFF6F00),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 4,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   GestureDetector(
                     onTap: () {
-                      Get.to(() => dashboard()); // Kembali ke halaman sebelumnya
+                      Get.to(() => dashboard());
                     },
                     child: Icon(
                       Icons.keyboard_backspace_rounded,
                       color: Colors.white,
+                      size: 24,
                     ),
                   ),
-                  Center(
-                    child: Text(
-                      "Laporan Aktivitas",
-                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 20),
-                    ),
+                  Text(
+                    "Laporan Aktivitas",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
                   ),
-                  SizedBox(width: 15),
+                  SizedBox(width: 24), // Placeholder untuk menjaga keseimbangan layout
                 ],
               ),
             ),
             SizedBox(height: 10),
+            // Konten
             Expanded(
               child: Container(
-                width: double.infinity,
+                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 6,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
                 ),
                 child: StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance
                       .collection('detailLaporan')
-                      .orderBy('timestamp', descending: true) // Urutkan berdasarkan timestamp terbaru
-                      .limit(1) // Hanya ambil 1 dokumen terbaru
+                      .orderBy('timestamp', descending: true)
+                      .limit(1)
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
+                      return Center(child: CircularProgressIndicator());
                     }
                     if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                       return Center(
-                        child: Text("Belum ada data laporan."),
+                        child: Text(
+                          "Belum ada data laporan.",
+                          style: TextStyle(color: Colors.grey, fontSize: 16),
+                        ),
                       );
                     }
 
-                    // Data detail laporan
                     final laporanList = snapshot.data!.docs.map((doc) {
                       final data = doc.data() as Map<String, dynamic>;
                       return data;
                     }).toList();
 
                     return ListView.builder(
-                      padding: const EdgeInsets.all(20.0),
                       itemCount: laporanList.length,
                       itemBuilder: (context, index) {
                         final laporan = laporanList[index];
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Periode Pengamatan",
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                                ),
-                                // Tombol Edit
-                                role == "BPBD" && acc
-    ? GestureDetector(
-        onTap: () {
-          Get.to(() => EditLaporanAktivitas());
-        },
-        child: Container(
-          padding: EdgeInsets.all(5),
-          decoration: BoxDecoration(
-            color: Color(0xFFFF6F00),
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: Icon(
-            Icons.edit,
-            color: Colors.white,
-          ),
-        ),
-      )
-    : SizedBox.shrink(), // Tidak menampilkan apa-apa jika kondisi tidak terpenuhi
-
-                              ],
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 16.0),
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
                             ),
-                            SizedBox(height: 5),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "${laporan['tanggal'] ?? 'N/A'}",
-                                  style: TextStyle(fontSize: 16, color: Colors.grey[700]),
-                                ),
-                                Text("${laporan['jam'] ?? 'N/A'} WIB",
-                                style: TextStyle(fontSize: 16, color: Colors.grey[700]),),
-                              ],
+                            elevation: 4,
+                            child: Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "Periode Pengamatan",
+                                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                                      ),
+                                      if (role == "BPBD" && acc)
+                                        GestureDetector(
+                                          onTap: () {
+                                            Get.to(() => EditLaporanAktivitas());
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.all(5),
+                                            decoration: BoxDecoration(
+                                              color: Color(0xFFFF6F00),
+                                              borderRadius: BorderRadius.circular(5),
+                                            ),
+                                            child: Icon(
+                                              Icons.edit,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 5),
+                                  Text(
+                                    "${laporan['tanggal'] ?? 'N/A'}",
+                                    style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                                  ),
+                                  Text(
+                                    "${laporan['jam'] ?? 'N/A'} WIB",
+                                    style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                                  ),
+                                  SizedBox(height: 20),
+                                  KolumLaporan(judul: "Meteorologist", deskripsi: laporan['meteorologist'] ?? "N/A"),
+                                  SizedBox(height: 10),
+                                  KolumLaporan(judul: "Visual", deskripsi: laporan['visual'] ?? "N/A"),
+                                  SizedBox(height: 10),
+                                  KolumLaporan(judul: "Kegempaan", deskripsi: laporan['kegempaan'] ?? "N/A"),
+                                  SizedBox(height: 10),
+                                  KolumLaporan(judul: "Keterangan", deskripsi: laporan['keterangan'] ?? "N/A"),
+                                ],
+                              ),
                             ),
-                            SizedBox(height: 20),
-                            KolumLaporan(judul: "Meteorologist", deskripsi: laporan['meteorologist'] ?? "N/A"),
-                            SizedBox(height: 10),
-                            KolumLaporan(judul: "Visual", deskripsi: laporan['visual'] ?? "N/A"),
-                            SizedBox(height: 10),
-                            KolumLaporan(judul: "Kegempaan", deskripsi: laporan['kegempaan'] ?? "N/A"),
-                            SizedBox(height: 10),
-                            KolumLaporan(judul: "Keterangan", deskripsi: laporan['keterangan'] ?? "N/A"),
-                            SizedBox(height: 20),
-                            Divider(color: Colors.grey), // Pembatas antar laporan
-                          ],
+                          ),
                         );
                       },
                     );
@@ -154,64 +174,45 @@ class KolumLaporan extends StatelessWidget {
 
   KolumLaporan({required this.judul, required this.deskripsi});
 
-  // Fungsi untuk mendapatkan ikon berdasarkan judul
-  String getIconForJudul(String judul) {
+  IconData getIconForJudul(String judul) {
     switch (judul) {
       case "Meteorologist":
-        return "assets/icons/meterologi.png";
+        return Icons.cloud;
       case "Visual":
-        return "assets/icons/eye.png";
+        return Icons.visibility;
       case "Kegempaan":
-        return "assets/icons/frekuensi.png";
+        return Icons.vibration;
       case "Keterangan":
-        return "assets/icons/eye.png"; // Gunakan ikon default untuk Keterangan
+        return Icons.info;
       default:
-        return "assets/icons/placeholder.png"; // Ikon default jika judul tidak dikenal
+        return Icons.help_outline;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final String iconPath = getIconForJudul(judul); // Dapatkan ikon berdasarkan judul
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 17.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2), // Shadow color
-            blurRadius: 10, // Spread of the shadow
-            offset: Offset(0, 4), // Position of the shadow (horizontal, vertical)
+    return Row(
+      children: [
+        Icon(
+          getIconForJudul(judul),
+          size: 30,
+          color: Color(0xFFFF6F00),
+        ),
+        SizedBox(width: 10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                judul,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 5),
+              Text(deskripsi),
+            ],
           ),
-        ],
-      ),
-      child: Row(
-        children: [
-          // Menampilkan ikon berdasarkan judul
-          Container(
-            height: 50,
-            width: 50,
-            child: Image.asset(iconPath, fit: BoxFit.cover),
-          ),
-          SizedBox(width: 10), // Space between the icon and text
-          // Menampilkan deskripsi berdasarkan parameter
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  judul,
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 5),
-                Text(deskripsi),
-              ],
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
