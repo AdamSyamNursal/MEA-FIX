@@ -286,13 +286,13 @@ child: Container(
                     break;
                   case 1:
                     if (authController.isLoggedIn.value) {
-                      Get.to(() => TambahLaporan(
+                      Get.to(() => TambahLaporanView(
                             userId: authController.userId,
                             role: authController.role,
                             
                           ));
                     } else {
-                      Get.to(() => TambahLaporan(
+                      Get.to(() => TambahLaporanView(
                             userId: '',
                             role: 'user',
                             

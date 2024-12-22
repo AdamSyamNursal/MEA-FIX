@@ -81,7 +81,7 @@ class Rekomendasi extends StatelessWidget {
                         ),
                         if (role == "BPBD" && acc)
                           GestureDetector(
-                            onTap: () => Get.to(() => Viewedit()),
+                            onTap: () => Get.to(() => ViewEdit()),
                             child: Container(
                               padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
                               decoration: BoxDecoration(

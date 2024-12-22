@@ -5,45 +5,40 @@ import 'package:mea/model/modeluser.dart';
 import 'package:mea/view/all/login.dart'; // Pastikan path benar
 import 'package:uuid/uuid.dart'; // Import UUID
 
-class Register extends StatefulWidget {
-  @override
-  _RegisterState createState() => _RegisterState();
-}
+class RegisterController extends GetxController {
+  final formKey = GlobalKey<FormState>();
+  final nameController = TextEditingController();
+  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+  final phoneNumberController = TextEditingController();
+  final addressController = TextEditingController();
+  final dateOfBirthController = TextEditingController();
 
-class _RegisterState extends State<Register> {
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _usernameController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
-  final _phoneNumberController = TextEditingController();
-  final _addressController = TextEditingController();
-  final _dateOfBirthController = TextEditingController();
+  var selectedRole = 'Relawan'.obs;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  String _selectedRole = 'Relawan'; // Default role
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  Future<void> _registerUser() async {
-    if (!_formKey.currentState!.validate()) return;
+  Future<void> registerUser() async {
+    if (!formKey.currentState!.validate()) return;
 
     try {
       // Generate UUID untuk ID pengguna
       final userId = Uuid().v4();
 
       // Extract form values
-      final name = _nameController.text.trim();
-      final username = _usernameController.text.trim();
-      final email = _emailController.text.trim();
-      final password = _passwordController.text;
-      final phoneNumber = _phoneNumberController.text.trim();
-      final address = _addressController.text.trim();
-      final dateOfBirth = _dateOfBirthController.text.trim();
-      final role = _selectedRole;
+      final name = nameController.text.trim();
+      final username = usernameController.text.trim();
+      final email = emailController.text.trim();
+      final password = passwordController.text;
+      final phoneNumber = phoneNumberController.text.trim();
+      final address = addressController.text.trim();
+      final dateOfBirth = dateOfBirthController.text.trim();
+      final role = selectedRole.value;
 
       // Save user data to Firestore
       final user = UserModel(
-        id: userId, // ID pengguna
+        id: userId,
         name: name,
         username: username,
         email: email,
@@ -54,10 +49,9 @@ class _RegisterState extends State<Register> {
         dateOfBirth: dateOfBirth,
         registrationDate: DateTime.now().toIso8601String(),
         acc: false,
-        
       );
 
-      await _firestore.collection('users').doc(userId).set(user.toJson());
+      await firestore.collection('users').doc(userId).set(user.toJson());
 
       // Notifikasi sukses menggunakan Get.snackbar
       Get.snackbar(
@@ -81,6 +75,10 @@ class _RegisterState extends State<Register> {
       );
     }
   }
+}
+
+class Register extends StatelessWidget {
+  final RegisterController controller = Get.put(RegisterController());
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +95,7 @@ class _RegisterState extends State<Register> {
                   children: [
                     IconButton(
                       icon: Icon(Icons.arrow_back, color: Colors.white),
-                      onPressed: () => Get.back(), // Mengganti Navigator.pop
+                      onPressed: () => Get.back(),
                     ),
                     Expanded(
                       child: Center(
@@ -124,7 +122,7 @@ class _RegisterState extends State<Register> {
                   borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                 ),
                 child: Form(
-                  key: _formKey,
+                  key: controller.formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -139,27 +137,23 @@ class _RegisterState extends State<Register> {
                       ),
                       SizedBox(height: 20),
 
-                      // Name Field
+                      // Input Fields
                       _buildInputField(
-                        controller: _nameController,
+                        controller: controller.nameController,
                         label: "Nama Lengkap",
                         hint: "Masukkan nama lengkap Anda",
                         validator: (value) =>
                             value!.isEmpty ? "Nama wajib diisi." : null,
                       ),
-
-                      // Username Field
                       _buildInputField(
-                        controller: _usernameController,
+                        controller: controller.usernameController,
                         label: "Username",
                         hint: "Masukkan username Anda",
                         validator: (value) =>
                             value!.isEmpty ? "Username wajib diisi." : null,
                       ),
-
-                      // Email Field
                       _buildInputField(
-                        controller: _emailController,
+                        controller: controller.emailController,
                         label: "Email",
                         hint: "Masukkan email Anda",
                         validator: (value) {
@@ -169,54 +163,44 @@ class _RegisterState extends State<Register> {
                           return null;
                         },
                       ),
-
-                      // Password Field
                       _buildInputField(
-                        controller: _passwordController,
+                        controller: controller.passwordController,
                         label: "Password",
                         hint: "Masukkan password",
                         obscureText: true,
                         validator: (value) =>
                             value!.isEmpty ? "Password wajib diisi." : null,
                       ),
-
-                      // Confirm Password Field
                       _buildInputField(
-                        controller: _confirmPasswordController,
+                        controller: controller.confirmPasswordController,
                         label: "Konfirmasi Password",
                         hint: "Masukkan password yang sama",
                         obscureText: true,
                         validator: (value) {
                           if (value!.isEmpty)
                             return "Konfirmasi password wajib diisi.";
-                          if (value != _passwordController.text)
+                          if (value != controller.passwordController.text)
                             return "Password tidak cocok.";
                           return null;
                         },
                       ),
-
-                      // Phone Number Field
                       _buildInputField(
-                        controller: _phoneNumberController,
+                        controller: controller.phoneNumberController,
                         label: "Nomor Telepon",
                         hint: "Masukkan nomor telepon Anda",
                         keyboardType: TextInputType.phone,
                         validator: (value) =>
                             value!.isEmpty ? "Nomor telepon wajib diisi." : null,
                       ),
-
-                      // Address Field
                       _buildInputField(
-                        controller: _addressController,
+                        controller: controller.addressController,
                         label: "Alamat",
                         hint: "Masukkan alamat Anda",
                         validator: (value) =>
                             value!.isEmpty ? "Alamat wajib diisi." : null,
                       ),
-
-                      // Date of Birth Field
                       _buildInputField(
-                        controller: _dateOfBirthController,
+                        controller: controller.dateOfBirthController,
                         label: "Tanggal Lahir",
                         hint: "Masukkan tanggal lahir Anda (dd-mm-yyyy)",
                         keyboardType: TextInputType.datetime,
@@ -239,30 +223,30 @@ class _RegisterState extends State<Register> {
                               ),
                             ),
                             SizedBox(height: 5),
-                            DropdownButtonFormField<String>(
-                              value: _selectedRole,
-                              items: ['Relawan', 'BPBD']
-                                  .map((role) => DropdownMenuItem(
-                                        value: role,
-                                        child: Text(role),
-                                      ))
-                                  .toList(),
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedRole = value!;
-                                });
-                              },
-                              decoration: InputDecoration(
-                                filled: true,
-                                fillColor: Colors.grey[200],
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                            Obx(
+                              () => DropdownButtonFormField<String>(
+                                value: controller.selectedRole.value,
+                                items: ['Relawan', 'BPBD']
+                                    .map((role) => DropdownMenuItem(
+                                          value: role,
+                                          child: Text(role),
+                                        ))
+                                    .toList(),
+                                onChanged: (value) {
+                                  controller.selectedRole.value = value!;
+                                },
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.grey[200],
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
                                 ),
+                                validator: (value) =>
+                                    value == null || value.isEmpty
+                                        ? "Role wajib dipilih."
+                                        : null,
                               ),
-                              validator: (value) =>
-                                  value == null || value.isEmpty
-                                      ? "Role wajib dipilih."
-                                      : null,
                             ),
                           ],
                         ),
@@ -275,7 +259,7 @@ class _RegisterState extends State<Register> {
                         child: SizedBox(
                           width: 300,
                           child: ElevatedButton(
-                            onPressed: _registerUser,
+                            onPressed: controller.registerUser,
                             style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.symmetric(vertical: 15),
                               backgroundColor: Color(0xFFFF6F00),

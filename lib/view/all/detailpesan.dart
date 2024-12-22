@@ -1,58 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mea/model/modelpesan.dart';
 
-class DetailPesan extends StatefulWidget {
+class DetailPesan extends GetView<DetailPesanController> {
   final ModelPesan pesan;
   final String role;
 
   DetailPesan({required this.pesan, required this.role});
 
   @override
-  _DetailPesanState createState() => _DetailPesanState();
-}
-
-class _DetailPesanState extends State<DetailPesan> {
-  final TextEditingController replyController = TextEditingController();
-  String currentBalasan = ""; // Untuk menampilkan balasan terbaru
-
-  @override
-  void initState() {
-    super.initState();
-    // Ambil balasan terkini dari Firebase
-    currentBalasan = widget.pesan.balasan;
-  }
-
-  Future<void> kirimBalasan(String replyText) async {
-    await FirebaseFirestore.instance
-        .collection('pesan')
-        .doc(widget.pesan.idPesan)
-        .update({'balasan': replyText});
-
-    // Update tampilan dengan balasan terbaru
-    setState(() {
-      currentBalasan = replyText;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final controller = Get.put(DetailPesanController(pesan));
+
     // Menentukan warna dan ikon berdasarkan role
-    final Color roleColor = (widget.pesan.role == 'Relawan')
+    final Color roleColor = (pesan.role == 'Relawan')
         ? Colors.green
-        : (widget.pesan.role == 'user')
+        : (pesan.role == 'user')
             ? Colors.red
             : Colors.grey;
-    final String roleIcon = (widget.pesan.role == 'Relawan')
+    final String roleIcon = (pesan.role == 'Relawan')
         ? 'assets/icons/relawan.png'
-        : (widget.pesan.role == 'user')
+        : (pesan.role == 'user')
             ? 'assets/icons/masyarakat.png'
             : 'assets/icons/default.png';
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Detail Pesan", style: TextStyle(color: Colors.white),),
-        backgroundColor: Color(0xFFFF6F00),
+        title: const Text(
+          "Detail Pesan",
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: const Color(0xFFFF6F00),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -72,22 +51,22 @@ class _DetailPesanState extends State<DetailPesan> {
                     fit: BoxFit.contain,
                   ),
                 ),
-                SizedBox(width: 16),
+                const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.pesan.namaPengirim,
+                        pesan.namaPengirim,
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                           color: roleColor,
                         ),
                       ),
-                      SizedBox(height: 4),
+                      const SizedBox(height: 4),
                       Text(
-                        "Role: ${widget.pesan.role}",
+                        "Role: ${pesan.role}",
                         style: TextStyle(fontSize: 14, color: roleColor),
                       ),
                     ],
@@ -95,69 +74,69 @@ class _DetailPesanState extends State<DetailPesan> {
                 ),
               ],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
             // Pertanyaan dan tanggal dalam satu box
             Container(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Color(0xFFFF6F00),
+                color: const Color(0xFFFF6F00),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: roleColor, width: 1.5),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     "Pertanyaan:",
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Text(
-                    widget.pesan.pertanyaan,
-                    style: TextStyle(fontSize: 14),
+                    pesan.pertanyaan,
+                    style: const TextStyle(fontSize: 14),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Text(
-                    "Tanggal: ${widget.pesan.timestamp.day}/${widget.pesan.timestamp.month}/${widget.pesan.timestamp.year}",
-                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                    "Tanggal: ${pesan.timestamp.day}/${pesan.timestamp.month}/${pesan.timestamp.year}",
+                    style: const TextStyle(fontSize: 14, color: Colors.grey),
                   ),
                 ],
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
             // Bagian Balasan
-            Text(
+            const Text(
               "Balasan:",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8),
-            Container(
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Color(0xFFFF6F00), width: 1.5),
-              ),
-              child: Text(
-                currentBalasan.isNotEmpty
-                    ? currentBalasan
-                    : "Belum ada balasan.",
-                style: TextStyle(fontSize: 14),
-              ),
-            ),
-            SizedBox(height: 20),
+            const SizedBox(height: 8),
+            Obx(() => Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: const Color(0xFFFF6F00), width: 1.5),
+                  ),
+                  child: Text(
+                    controller.currentBalasan.isNotEmpty
+                        ? controller.currentBalasan.value
+                        : "Belum ada balasan.",
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                )),
+            const SizedBox(height: 20),
 
             // Jika role adalah BPBD, tampilkan box untuk menambahkan balasan
-            if (widget.role == 'BPBD') ...[
-              Text(
+            if (role == 'BPBD') ...[
+              const Text(
                 "Tambahkan Balasan:",
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(8),
@@ -167,24 +146,24 @@ class _DetailPesanState extends State<DetailPesan> {
                   children: [
                     Expanded(
                       child: TextField(
-                        controller: replyController,
+                        controller: controller.replyController,
                         maxLines: 3,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: "Tulis balasan Anda...",
                           border: InputBorder.none,
                         ),
                       ),
                     ),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     GestureDetector(
                       onTap: () async {
-                        final replyText = replyController.text.trim();
+                        final replyText = controller.replyController.text.trim();
                         if (replyText.isNotEmpty) {
-                          await kirimBalasan(replyText);
+                          await controller.kirimBalasan(replyText);
 
                           // Tampilkan Snackbar
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
+                            const SnackBar(
                               content: Text("Balasan berhasil dikirim!"),
                               backgroundColor: Colors.green,
                               duration: Duration(seconds: 2),
@@ -192,16 +171,16 @@ class _DetailPesanState extends State<DetailPesan> {
                           );
 
                           // Kosongkan TextField
-                          replyController.clear();
+                          controller.replyController.clear();
                         }
                       },
                       child: Container(
-                        padding: EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: Color(0xFFFF6F00),
+                          color: const Color(0xFFFF6F00),
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: Icon(
+                        child: const Icon(
                           Icons.send,
                           color: Colors.white,
                         ),
@@ -215,5 +194,28 @@ class _DetailPesanState extends State<DetailPesan> {
         ),
       ),
     );
+  }
+}
+
+class DetailPesanController extends GetxController {
+  final ModelPesan pesan;
+  DetailPesanController(this.pesan);
+
+  final TextEditingController replyController = TextEditingController();
+  final RxString currentBalasan = ''.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    currentBalasan.value = pesan.balasan ?? '';
+  }
+
+  Future<void> kirimBalasan(String replyText) async {
+    await FirebaseFirestore.instance
+        .collection('pesan')
+        .doc(pesan.idPesan)
+        .update({'balasan': replyText});
+
+    currentBalasan.value = replyText;
   }
 }

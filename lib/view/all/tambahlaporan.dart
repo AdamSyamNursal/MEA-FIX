@@ -2,104 +2,87 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mea/controller/map/mapcontroller.dart';
-
 import 'package:mea/model/modelaporan.dart';
 
-class TambahLaporan extends StatefulWidget {
-  final String userId;
-  final String role;
-
-  TambahLaporan({required this.userId, required this.role});
-
-  @override
-  _TambahLaporanState createState() => _TambahLaporanState();
-}
-
-class _TambahLaporanState extends State<TambahLaporan> {
+class TambahLaporanController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
-  final TextEditingController _namaJalanController = TextEditingController();
-  final TextEditingController _kelurahanController = TextEditingController();
-  final TextEditingController _kecamatanController = TextEditingController();
-  final TextEditingController _kotaController = TextEditingController();
-  final TextEditingController _provinsiController = TextEditingController();
-  final TextEditingController _kodePosController = TextEditingController();
-  final TextEditingController _alamatController = TextEditingController();
-  final TextEditingController _keteranganController = TextEditingController();
-  final TextEditingController _pengirimController = TextEditingController();
+  final namaJalanController = TextEditingController();
+  final kelurahanController = TextEditingController();
+  final kecamatanController = TextEditingController();
+  final kotaController = TextEditingController();
+  final provinsiController = TextEditingController();
+  final kodePosController = TextEditingController();
+  final alamatController = TextEditingController();
+  final keteranganController = TextEditingController();
+  final pengirimController = TextEditingController();
 
-  File? _selectedImage;
-  LatLng? _currentPosition;
+  Rx<File?> selectedImage = Rx<File?>(null);
+  Rx<LatLng?> currentPosition = Rx<LatLng?>(null);
 
-  void _updateLocation(LatLng position) {
-    setState(() {
-      _currentPosition = position;
-    });
+  void updateLocation(LatLng position) {
+    currentPosition.value = position;
   }
 
-  Future<void> _pickImage() async {
+  Future<void> pickImage() async {
     final picker = ImagePicker();
+    final source = await _selectImageSource();
+    if (source == null) return;
+
     final pickedFile = await picker.pickImage(
-      source: await _selectImageSource(),
+      source: source,
       maxWidth: 800,
       maxHeight: 800,
     );
 
     if (pickedFile != null) {
-      setState(() {
-        _selectedImage = File(pickedFile.path);
-      });
+      selectedImage.value = File(pickedFile.path);
     }
   }
 
-  Future<ImageSource> _selectImageSource() async {
-    final result = await showDialog<ImageSource>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Pilih Sumber Gambar'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, ImageSource.camera),
+  Future<ImageSource?> _selectImageSource() async {
+    return await Get.defaultDialog<ImageSource>(
+      title: 'Pilih Sumber Gambar',
+      content: Column(
+        children: [
+          ElevatedButton(
+            onPressed: () => Get.back(result: ImageSource.camera),
             child: Text('Kamera'),
           ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, ImageSource.gallery),
+          ElevatedButton(
+            onPressed: () => Get.back(result: ImageSource.gallery),
             child: Text('Galeri'),
           ),
         ],
       ),
     );
-    return result ?? ImageSource.gallery;
   }
 
   Future<String?> _uploadImage() async {
-    if (_selectedImage == null) return null;
+    if (selectedImage.value == null) return null;
 
     try {
       final fileName = DateTime.now().millisecondsSinceEpoch.toString();
       final ref = _storage.ref().child('laporan_images').child(fileName);
 
-      final uploadTask = ref.putFile(_selectedImage!);
+      final uploadTask = ref.putFile(selectedImage.value!);
       final snapshot = await uploadTask;
 
       return await snapshot.ref.getDownloadURL();
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Gagal mengunggah gambar: ${e.toString()}')),
-      );
+      Get.snackbar('Error', 'Gagal mengunggah gambar: ${e.toString()}');
       return null;
     }
   }
 
-  Future<void> _kirimLaporan(BuildContext context) async {
-    if (_currentPosition == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Lokasi belum ditemukan!')),
-      );
+  Future<void> kirimLaporan(String userId, String role) async {
+    if (currentPosition.value == null) {
+      Get.snackbar('Error', 'Lokasi belum ditemukan!');
       return;
     }
 
@@ -108,21 +91,21 @@ class _TambahLaporanState extends State<TambahLaporan> {
 
       final laporan = Laporan(
         id: '',
-        namaJalan: _namaJalanController.text.trim(),
-        kelurahan: _kelurahanController.text.trim(),
-        kecamatan: _kecamatanController.text.trim(),
-        kota: _kotaController.text.trim(),
-        provinsi: _provinsiController.text.trim(),
-        kodePos: _kodePosController.text.trim(),
-        userId: widget.userId,
-        role: widget.role,
-        alamat: _alamatController.text.trim(),
-        keterangan: _keteranganController.text.trim(),
+        namaJalan: namaJalanController.text.trim(),
+        kelurahan: kelurahanController.text.trim(),
+        kecamatan: kecamatanController.text.trim(),
+        kota: kotaController.text.trim(),
+        provinsi: provinsiController.text.trim(),
+        kodePos: kodePosController.text.trim(),
+        userId: userId,
+        role: role,
+        alamat: alamatController.text.trim(),
+        keterangan: keteranganController.text.trim(),
         tanggal: DateTime.now(),
         valid: false,
-        pengirim: _pengirimController.text.trim(),
-        longitude: _currentPosition?.longitude,
-        latitude: _currentPosition?.latitude,
+        pengirim: pengirimController.text.trim(),
+        longitude: currentPosition.value?.longitude,
+        latitude: currentPosition.value?.latitude,
         arsip: false,
       );
 
@@ -133,33 +116,36 @@ class _TambahLaporanState extends State<TambahLaporan> {
 
       await docRef.update({'id': docRef.id});
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Laporan berhasil dikirim!')),
-      );
+      Get.snackbar('Sukses', 'Laporan berhasil dikirim!');
 
-      _resetFields();
+      resetFields();
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Terjadi kesalahan: ${e.toString()}')),
-      );
+      Get.snackbar('Error', 'Terjadi kesalahan: ${e.toString()}');
     }
   }
 
-  void _resetFields() {
-    _namaJalanController.clear();
-    _kelurahanController.clear();
-    _kecamatanController.clear();
-    _kotaController.clear();
-    _provinsiController.clear();
-    _kodePosController.clear();
-    _alamatController.clear();
-    _keteranganController.clear();
-    _pengirimController.clear();
-    setState(() {
-      _selectedImage = null;
-      _currentPosition = null;
-    });
+  void resetFields() {
+    namaJalanController.clear();
+    kelurahanController.clear();
+    kecamatanController.clear();
+    kotaController.clear();
+    provinsiController.clear();
+    kodePosController.clear();
+    alamatController.clear();
+    keteranganController.clear();
+    pengirimController.clear();
+    selectedImage.value = null;
+    currentPosition.value = null;
   }
+}
+
+class TambahLaporanView extends StatelessWidget {
+  final String userId;
+  final String role;
+
+  TambahLaporanView({required this.userId, required this.role});
+
+  final controller = Get.put(TambahLaporanController());
 
   @override
   Widget build(BuildContext context) {
@@ -176,9 +162,7 @@ class _TambahLaporanState extends State<TambahLaporan> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
+                    onTap: () => Get.back(),
                     child: Container(
                       height: 27,
                       width: 27,
@@ -217,14 +201,14 @@ class _TambahLaporanState extends State<TambahLaporan> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      MapController(onLocationChanged: _updateLocation),
+                      MapController(onLocationChanged: controller.updateLocation),
                       SizedBox(height: 10),
-                      _buildTextField("Nama Jalan", _namaJalanController),
-                      _buildTextField("Kelurahan", _kelurahanController),
-                      _buildTextField("Kecamatan", _kecamatanController),
-                      _buildTextField("Kota", _kotaController),
-                      _buildTextField("Provinsi", _provinsiController),
-                      _buildTextField("Kode Pos", _kodePosController),
+                      _buildTextField("Nama Jalan", controller.namaJalanController),
+                      _buildTextField("Kelurahan", controller.kelurahanController),
+                      _buildTextField("Kecamatan", controller.kecamatanController),
+                      _buildTextField("Kota", controller.kotaController),
+                      _buildTextField("Provinsi", controller.provinsiController),
+                      _buildTextField("Kode Pos", controller.kodePosController),
                       SizedBox(height: 10),
                       Text(
                         "Pengirim:",
@@ -235,7 +219,7 @@ class _TambahLaporanState extends State<TambahLaporan> {
                         ),
                       ),
                       SizedBox(height: 10),
-                      _buildTextField("Nama Pengirim", _pengirimController),
+                      _buildTextField("Nama Pengirim", controller.pengirimController),
                       SizedBox(height: 10),
                       Text(
                         "Deskripsi Informasi:",
@@ -246,10 +230,10 @@ class _TambahLaporanState extends State<TambahLaporan> {
                         ),
                       ),
                       SizedBox(height: 10),
-                      _buildTextField("Alamat", _alamatController),
+                      _buildTextField("Alamat", controller.alamatController),
                       SizedBox(height: 10),
                       TextField(
-                        controller: _keteranganController,
+                        controller: controller.keteranganController,
                         maxLines: 5,
                         decoration: InputDecoration(
                           labelText: "Keterangan",
@@ -269,18 +253,18 @@ class _TambahLaporanState extends State<TambahLaporan> {
                       ),
                       SizedBox(height: 10),
                       ElevatedButton(
-                        onPressed: _pickImage,
+                        onPressed: () => controller.pickImage(),
                         child: Text('Pilih Gambar'),
                       ),
                       SizedBox(height: 10),
-                      _selectedImage != null
-                          ? Image.file(_selectedImage!, height: 150)
-                          : Text('Belum ada gambar yang dipilih'),
+                      Obx(() => controller.selectedImage.value != null
+                          ? Image.file(controller.selectedImage.value!, height: 150)
+                          : Text('Belum ada gambar yang dipilih')),
                       SizedBox(height: 20),
                       Container(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () => _kirimLaporan(context),
+                          onPressed: () => controller.kirimLaporan(userId, role),
                           child: Text(
                             "Kirim Laporan",
                             style: TextStyle(color: Colors.white),
@@ -329,3 +313,5 @@ class _TambahLaporanState extends State<TambahLaporan> {
     );
   }
 }
+
+

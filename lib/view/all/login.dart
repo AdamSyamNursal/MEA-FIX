@@ -5,31 +5,30 @@ import 'package:mea/controller/auth/auth_controller.dart';
 import 'package:mea/view/all/dashboar.dart';
 import 'package:mea/view/all/register.dart';
 
+class LoginController extends GetxController {
+  final usernameController = TextEditingController();
+  final passwordController = TextEditingController();
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final authController = Get.put(AuthController());
 
-class Login extends StatefulWidget {
-  @override
-  _LoginState createState() => _LoginState();
-}
+  var obscureText = true.obs;
 
-class _LoginState extends State<Login> {
-  final authController = Get.put(AuthController()); // Inisialisasi AuthController
-  bool _obscureText = true;
-  final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  void togglePasswordVisibility() {
+    obscureText.value = !obscureText.value;
+  }
 
-  Future<void> _loginUser() async {
-    final username = _usernameController.text.trim();
-    final password = _passwordController.text.trim();
+  Future<void> loginUser() async {
+    final username = usernameController.text.trim();
+    final password = passwordController.text.trim();
 
     if (username.isEmpty || password.isEmpty) {
-      _showMessage('Username dan password tidak boleh kosong.');
+      Get.snackbar("Error", "Username dan password tidak boleh kosong.",
+          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red, colorText: Colors.white);
       return;
     }
 
     try {
-      // Cari data pengguna di Firestore berdasarkan username dan password
-      final querySnapshot = await _firestore
+      final querySnapshot = await firestore
           .collection('users')
           .where('username', isEqualTo: username)
           .where('password', isEqualTo: password)
@@ -37,19 +36,21 @@ class _LoginState extends State<Login> {
 
       if (querySnapshot.docs.isNotEmpty) {
         final userData = querySnapshot.docs.first.data();
-        // Gunakan AuthController untuk menyimpan status login
         await authController.loginUser(userData);
+        Get.offAll(() => dashboard());
       } else {
-        _showMessage('Username atau password salah.');
+        Get.snackbar("Error", "Username atau password salah.",
+            snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red, colorText: Colors.white);
       }
     } catch (e) {
-      _showMessage('Terjadi kesalahan: ${e.toString()}');
+      Get.snackbar("Error", "Terjadi kesalahan: ${e.toString()}",
+          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red, colorText: Colors.white);
     }
   }
+}
 
-  void _showMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
-  }
+class Login extends StatelessWidget {
+  final LoginController controller = Get.put(LoginController());
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +68,7 @@ class _LoginState extends State<Login> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      Get.to(() => dashboard()); // Menggunakan GetX untuk navigasi
+                      Get.to(() => dashboard());
                     },
                     child: Icon(
                       Icons.keyboard_backspace_rounded,
@@ -115,7 +116,7 @@ class _LoginState extends State<Login> {
 
                       // Username Field
                       TextField(
-                        controller: _usernameController,
+                        controller: controller.usernameController,
                         decoration: InputDecoration(
                           hintText: "Nama/Username",
                           border: OutlineInputBorder(
@@ -128,35 +129,31 @@ class _LoginState extends State<Login> {
                       SizedBox(height: 20),
 
                       // Password Field
-                      TextField(
-                        controller: _passwordController,
-                        obscureText: _obscureText,
-                        decoration: InputDecoration(
-                          hintText: "Password",
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          filled: true,
-                          fillColor: Colors.grey[200],
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              _obscureText
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
+                      Obx(() => TextField(
+                            controller: controller.passwordController,
+                            obscureText: controller.obscureText.value,
+                            decoration: InputDecoration(
+                              hintText: "Password",
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              filled: true,
+                              fillColor: Colors.grey[200],
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  controller.obscureText.value
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
+                                ),
+                                onPressed: controller.togglePasswordVisibility,
+                              ),
                             ),
-                            onPressed: () {
-                              setState(() {
-                                _obscureText = !_obscureText;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
+                          )),
                       SizedBox(height: 30),
 
                       // Login Button
                       ElevatedButton(
-                        onPressed: _loginUser,
+                        onPressed: controller.loginUser,
                         child: Text(
                           "Masuk",
                           style: TextStyle(color: Colors.white),
@@ -174,7 +171,7 @@ class _LoginState extends State<Login> {
                       // Register Button
                       OutlinedButton(
                         onPressed: () {
-                          Get.to(() => Register()); // Navigasi ke halaman register
+                          Get.to(() => Register());
                         },
                         child: Text(
                           "Daftar",
