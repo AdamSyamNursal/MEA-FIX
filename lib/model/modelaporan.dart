@@ -58,9 +58,9 @@ class Laporan {
       tanggal: (json['tanggal'] as Timestamp).toDate(),
       valid: json['valid'] ?? false,
       pengirim: json['pengirim'] ?? '',
-      imageUrl: json['imageUrl'], // Ambil URL gambar jika tersedia
-      latitude: json['latitude'],
-      longitude: json['longtitude'],
+latitude: json['latitude'] ?? 0.0,
+longitude: json['longtitude'] ?? 0.0,
+imageUrl: json['imageUrl'] ?? '',
       arsip: json['arsip'] ?? false,
     );
   }

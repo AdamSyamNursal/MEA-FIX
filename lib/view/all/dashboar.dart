@@ -179,12 +179,6 @@ class dashboard extends StatelessWidget {
                                           fontSize: 16,
                                         ),
                                       ),
-                                      const SizedBox(width: 4),
-                                      Icon(
-                                        Icons.arrow_right_sharp,
-                                        color: Colors.white,
-                                        size: 24,
-                                      ),
                                     ],
                                   ),
                                 ),

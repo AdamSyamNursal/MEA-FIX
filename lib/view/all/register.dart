@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:mea/model/modeluser.dart';
 import 'package:mea/view/all/login.dart'; // Pastikan path benar
 import 'package:uuid/uuid.dart'; // Import UUID
+import 'package:crypto/crypto.dart'; // Import untuk hashing password
+import 'dart:convert'; // Untuk utf8.encode
 
 class RegisterController extends GetxController {
   final formKey = GlobalKey<FormState>();
@@ -19,6 +21,13 @@ class RegisterController extends GetxController {
   var selectedRole = 'Relawan'.obs;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+  // Fungsi untuk hashing password
+  String hashPassword(String password) {
+    final bytes = utf8.encode(password); // Konversi password ke bytes
+    final hashed = sha256.convert(bytes); // Hash dengan SHA256
+    return hashed.toString(); // Kembalikan hasil hashing
+  }
+
   Future<void> registerUser() async {
     if (!formKey.currentState!.validate()) return;
 
@@ -30,7 +39,7 @@ class RegisterController extends GetxController {
       final name = nameController.text.trim();
       final username = usernameController.text.trim();
       final email = emailController.text.trim();
-      final password = passwordController.text;
+      final hashedPassword = hashPassword(passwordController.text); // Hash password
       final phoneNumber = phoneNumberController.text.trim();
       final address = addressController.text.trim();
       final dateOfBirth = dateOfBirthController.text.trim();
@@ -42,7 +51,7 @@ class RegisterController extends GetxController {
         name: name,
         username: username,
         email: email,
-        password: password,
+        password: hashedPassword, // Simpan password yang sudah di-hash
         role: role,
         phoneNumber: phoneNumber,
         address: address,

@@ -5,7 +5,8 @@ import 'package:mea/controller/auth/auth_controller.dart';
 import 'package:mea/view/all/dashboar.dart';
 import 'package:mea/view/all/register.dart';
 import 'package:mea/view/navigation_bar.dart';
-
+import 'package:crypto/crypto.dart'; // Import untuk hashing
+import 'dart:convert'; // Untuk utf8.encode
 
 class LoginController extends GetxController {
   final usernameController = TextEditingController();
@@ -19,6 +20,13 @@ class LoginController extends GetxController {
     obscureText.value = !obscureText.value;
   }
 
+  // Fungsi untuk hashing password
+  String hashPassword(String password) {
+    final bytes = utf8.encode(password); // Konversi password ke bytes
+    final hashed = sha256.convert(bytes); // Hash dengan SHA256
+    return hashed.toString(); // Kembalikan hasil hashing
+  }
+
   Future<void> loginUser() async {
     final username = usernameController.text.trim();
     final password = passwordController.text.trim();
@@ -30,15 +38,19 @@ class LoginController extends GetxController {
     }
 
     try {
+      // Hash password sebelum dibandingkan
+      final hashedPassword = hashPassword(password);
+
+      // Query Firestore untuk mencocokkan username dan password yang di-hash
       final querySnapshot = await firestore
           .collection('users')
           .where('username', isEqualTo: username)
-          .where('password', isEqualTo: password)
+          .where('password', isEqualTo: hashedPassword)
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
         final userData = querySnapshot.docs.first.data();
-        await authController.loginUser(userData);
+        await authController.loginUser(userData); // Simpan sesi pengguna
         Get.offAll(() => dashboard());
       } else {
         Get.snackbar("Error", "Username atau password salah.",

@@ -218,13 +218,6 @@ class TambahLaporanView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  GestureDetector(
-                    onTap: () => Get.back(),
-                    child: Icon(
-                      Icons.keyboard_backspace_rounded,
-                      color: Colors.white,
-                    ),
-                  ),
                   Expanded(
                     child: Center(
                       child: Text(

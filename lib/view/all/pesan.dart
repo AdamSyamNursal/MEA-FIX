@@ -33,19 +33,6 @@ class Pesan extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      Get.to(() => dashboard());
-                    },
-                    child: Container(
-                      height: 27,
-                      width: 27,
-                      child: Icon(
-                        Icons.keyboard_backspace_rounded,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
                   Expanded(
                     child: Center(
                       child: Text(

@@ -48,12 +48,6 @@ class ProfilePage extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        GestureDetector(
-                          onTap: () {
-                            Get.to(()=>dashboard());
-                          },
-                          child: Icon(Icons.keyboard_backspace_rounded, color: Colors.white),
-                        ),
                         Expanded(
                           child: Center(
                             child: Text(
