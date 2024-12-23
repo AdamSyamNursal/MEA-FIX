@@ -8,11 +8,11 @@ class listlaporan extends StatelessWidget {
   final bool acc;
   final String akses;
 
-  listlaporan({required this.laporanList , required this.acc, required this.akses});
+  listlaporan({required this.laporanList, required this.acc, required this.akses});
 
   Widget _buildLaporanItem(Map<String, dynamic> laporan) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0), // Padding setiap item
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Container(
         height: 300,
         width: double.infinity,
@@ -28,39 +28,43 @@ class listlaporan extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
         ),
-        child:Column(
-  mainAxisSize: MainAxisSize.min, // Menghindari overflow dengan ukuran minimal
-  children: [
-    Expanded(
-      child: gambarstack(
-        gambar: laporan['imageUrl'],
-        role: laporan['role'] ?? '',
-        acc: acc,
-        kecamatan: laporan['kecamatan'],
-        kelurahan: laporan['kelurahan'],
-        time: laporan['tanggal'], 
-        laporanId: laporan['id'],
-        akses: akses,
-      ),
-    ),
-    Container(
-      padding: const EdgeInsets.symmetric(horizontal: 17.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          isilistshor(content: laporan['keterangan'] ?? 'Tidak ada keterangan'),
-          Isilistvalid(
-            valid: laporan['valid'] ?? false,
-            idLaporan: laporan['id'] ?? '',
-            akses: akses,
-          ),
-        ],
-      ),
-    ),
-  ],
-),
-
+        child: Column(
+          mainAxisSize: MainAxisSize.min, // Menghindari overflow dengan ukuran minimal
+          children: [
+            Expanded(
+              child: gambarstack(
+                gambar: laporan['imageUrl'],
+                role: laporan['role'] ?? '',
+                acc: acc,
+                kecamatan: laporan['kecamatan'],
+                kelurahan: laporan['kelurahan'],
+                time: laporan['tanggal'],
+                laporanId: laporan['id'],
+                akses: akses,
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 17.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded( // Membatasi ukuran teks agar tidak overflow
+                    child: isilistshor(
+                      content: laporan['keterangan'] ?? 'Tidak ada keterangan',
+                    ),
+                  ),
+                  SizedBox(width: 8), // Memberi jarak antara elemen
+                  Isilistvalid(
+                    valid: laporan['valid'] ?? false,
+                    idLaporan: laporan['id'] ?? '',
+                    akses: akses,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -76,8 +80,7 @@ class listlaporan extends StatelessWidget {
       );
     }
 
-    return ListView.builder(
-      padding: EdgeInsets.only(bottom: 70.0), // Tambahkan padding untuk ruang ekstra
+    return ListView.builder(// Tambahkan padding untuk ruang ekstra
       itemCount: laporanList.length,
       itemBuilder: (context, index) {
         final laporan = laporanList[index];

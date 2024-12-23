@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:mea/controller/auth/auth_controller.dart';
 import 'package:mea/view/all/dashboar.dart';
 import 'package:mea/view/all/register.dart';
+import 'package:mea/view/navigation_bar.dart';
+
 
 class LoginController extends GetxController {
   final usernameController = TextEditingController();
@@ -191,6 +193,10 @@ class Login extends StatelessWidget {
               ),
             ),
           ],
+        ),
+        bottomNavigationBar: CustomNavigationBar(
+          authController: Get.find<AuthController>(),
+          currentIndex: 3, // Tab pertama untuk Login
         ),
       ),
     );

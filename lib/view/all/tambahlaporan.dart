@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:mea/controller/auth/auth_controller.dart';
 import 'package:mea/controller/map/mapcontroller.dart';
 import 'package:mea/model/modelaporan.dart';
+import 'package:mea/view/navigation_bar.dart';
 
 class TambahLaporanController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -289,7 +291,7 @@ class TambahLaporanView extends StatelessWidget {
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: controller.isFormValid.value
                                     ? Color(0xFFFF6F00)
-                                    : Colors.grey,
+                                    : Colors.white,
                                 padding: EdgeInsets.symmetric(vertical: 16),
                               ),
                             ),
@@ -301,6 +303,11 @@ class TambahLaporanView extends StatelessWidget {
             ),
           ],
         ),
+        bottomNavigationBar: CustomNavigationBar(
+  authController: Get.find<AuthController>(),
+  currentIndex: 1, // Set tab kedua sebagai aktif
+),
+
       ),
     );
   }
@@ -322,10 +329,9 @@ class TambahLaporanView extends StatelessWidget {
           controller: controller,
           maxLines: maxLines,
           decoration: InputDecoration(
-            
             border: OutlineInputBorder(),
             filled: true,
-            fillColor: Colors.grey[200],
+            fillColor: Colors.white,
           ),
         ),
         SizedBox(height: 10),

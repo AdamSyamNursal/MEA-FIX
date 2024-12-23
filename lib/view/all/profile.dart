@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:mea/controller/auth/auth_controller.dart';
 import 'package:mea/view/all/dashboar.dart';
 import 'package:mea/view/all/login.dart';
+import 'package:mea/view/navigation_bar.dart';
 
 class ProfilePage extends StatelessWidget {
   final String userid;
@@ -85,46 +86,44 @@ class ProfilePage extends StatelessWidget {
                             profileItem("Nama", userData['name'] ?? 'Tidak Diketahui'),
                             profileItem("Username", userData['username'] ?? 'Tidak Diketahui'),
                             profileItem("Email", userData['email'] ?? 'Tidak Diketahui'),
-profileItem(
-  "Role",
-  userData['acc'] == true
-      ? (userData['role'] ?? 'Tidak Diketahui')
-      : 'user',
-),
- 
+                            profileItem(
+                              "Role",
+                              userData['acc'] == true
+                                  ? (userData['role'] ?? 'Tidak Diketahui')
+                                  : 'user',
+                            ),
                             profileItem("Nomor Handphone", userData['phoneNumber'] ?? 'Tidak Diketahui'),
                             profileItem("Alamat", userData['address'] ?? 'Tidak Diketahui'),
                             profileItem("Tanggal Lahir", userData['dateOfBirth'] ?? 'Tidak Diketahui'),
                             profileItem("Tanggal Daftar", userData['registrationDate'] ?? 'Tidak Diketahui'),
                             SizedBox(height: 20),
-ElevatedButton(
-  onPressed: authController.logoutUser,
-  style: ElevatedButton.styleFrom(
-    backgroundColor: Color(0xFFFF6F00), // Warna tombol
-    padding: EdgeInsets.symmetric(vertical: 16, horizontal: 30), // Padding lebih lebar
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(30), // Tombol dengan sudut melengkung
-    ),
-    shadowColor: Colors.black.withOpacity(0.2), // Bayangan tombol
-    elevation: 6, // Efek elevasi tombol
-  ),
-  child: Row(
-    mainAxisAlignment: MainAxisAlignment.center, // Memastikan teks ada di tengah
-    children: [
-      Icon(Icons.logout, color: Colors.white), // Ikon logout
-      SizedBox(width: 10), // Jarak antara ikon dan teks
-      Text(
-        "Logout",
-        style: TextStyle(
-          fontSize: 18, // Ukuran teks lebih besar
-          fontWeight: FontWeight.bold,
-          color: Colors.white, // Warna teks
-        ),
-      ),
-    ],
-  ),
-)
-
+                            ElevatedButton(
+                              onPressed: authController.logoutUser,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xFFFF6F00), // Warna tombol
+                                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 30), // Padding lebih lebar
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30), // Tombol dengan sudut melengkung
+                                ),
+                                shadowColor: Colors.black.withOpacity(0.2), // Bayangan tombol
+                                elevation: 6, // Efek elevasi tombol
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center, // Memastikan teks ada di tengah
+                                children: [
+                                  Icon(Icons.logout, color: Colors.white), // Ikon logout
+                                  SizedBox(width: 10), // Jarak antara ikon dan teks
+                                  Text(
+                                    "Logout",
+                                    style: TextStyle(
+                                      fontSize: 18, // Ukuran teks lebih besar
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white, // Warna teks
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -133,6 +132,10 @@ ElevatedButton(
                 ],
               );
             },
+          ),
+          bottomNavigationBar: CustomNavigationBar(
+            authController: authController,
+            currentIndex: 3, // Tab ke-3 untuk Profile
           ),
         ),
       );

@@ -93,7 +93,7 @@ leading: GestureDetector(
       builder: (_) => Dialog(
         child: Container(
           child: Image.network(
-            laporan.imageUrl ?? 'https://example.com/default-image.jpg', // Default jika null
+            laporan.imageUrl, // Default jika null
             fit: BoxFit.cover,
           ),
         ),
@@ -106,7 +106,7 @@ leading: GestureDetector(
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(8.0),
       image: DecorationImage(
-        image: NetworkImage(laporan.imageUrl ?? 'https://example.com/default-image.jpg'), // Default jika null
+        image: NetworkImage(laporan.imageUrl), // Default jika null
         fit: BoxFit.cover,
       ),
     ),

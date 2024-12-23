@@ -47,24 +47,29 @@ class Isilistvalid extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              child: Row(
-                children: [
-                Text(
-                  textvalid(),
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14, // Menyesuaikan ukuran font
-                  color: Colors.white,
-                  height: 1.4, // Menambah jarak antar baris teks
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                  Icon(Icons.touch_app, size: 16, color: Colors.white),
-                ],
-              ),
-            ),
+Container(
+  child: Row(
+    children: [
+      Expanded(
+        child: Text(
+          textvalid(),
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 14, // Menyesuaikan ukuran font
+            color: Colors.white,
+            height: 1.4, // Menambah jarak antar baris teks
+          ),
+          overflow: TextOverflow.ellipsis, // Memastikan teks tidak overflow
+          maxLines: 1, // Batas jumlah baris teks
+        ),
+      ),
+      SizedBox(width: 8),
+      Icon(Icons.touch_app, size: 16, color: Colors.white),
+    ],
+  ),
+),
+
           ],
         ),
       ),

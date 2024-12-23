@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mea/controller/arsip/dropdown.dart';
+import 'package:mea/controller/auth/auth_controller.dart';
 import 'package:mea/controller/pesan/PesanFilterController.dart';
 import 'package:mea/model/modelpesan.dart';
 import 'package:mea/view/all/dashboar.dart';
 import 'package:mea/view/all/detailpesan.dart';
 import 'package:mea/view/all/tambahpesan.dart';
+import 'package:mea/view/navigation_bar.dart';
+
 
 class Pesan extends StatelessWidget {
   final String userId;
@@ -192,6 +195,10 @@ class Pesan extends StatelessWidget {
                 child: Icon(Icons.add, color: Colors.white),
               )
             : null,
+        bottomNavigationBar: CustomNavigationBar(
+          authController: Get.find<AuthController>(),
+          currentIndex: 2, // Tab ke-2 untuk Pesan
+        ),
       ),
     );
   }
