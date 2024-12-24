@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:mea/controller/level.dart';
+import 'package:mea/widget/dashboard/level.dart';
 
-import 'package:mea/controller/appbar/burger/burger.dart';
+import 'package:mea/widget/dashboard/burger/burger.dart';
 import 'package:mea/controller/auth/auth_controller.dart';
-import 'package:mea/widget/dashboard/rekomendasi_akun/akun.dart';
-import 'package:mea/view/all/laporan.dart';
 import 'package:mea/widget/dashboard/laporan_aktivitas/laporan_aktivitas.dart';
-import 'package:mea/view/all/rekomendasi.dart';
 import 'package:mea/view/navigation_bar.dart';
-import 'package:mea/widget/dashboard/listlaporan/laporan_stream.dart';
+import 'package:mea/widget/dashboard/laporan/listlaporan/laporan_stream.dart';
 import 'package:mea/widget/dashboard/level/level_controller.dart';
 import 'package:mea/widget/dashboard/level/level_dropdown.dart';
-import 'package:mea/widget/dashboard/rekomendasi_akun/popupmenubutton.dart';
+import 'package:mea/widget/dashboard/rekomendasi_button/popupmenubutton.dart';
 
 class dashboard extends StatelessWidget {
   final AuthController authController = Get.find<AuthController>();
@@ -34,6 +31,7 @@ class dashboard extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Color(0xFFFF6F00),
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           backgroundColor: Color(0xFFFF6F00),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

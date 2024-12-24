@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mea/model/modeluser.dart';
-import 'package:mea/widget/dashboard/rekomendasi_akun/userdetailview.dart';
+import 'package:mea/widget/dashboard/rekomendasi_button/akun/userdetailview.dart';
 
 class UserListView extends StatelessWidget {
   final CollectionReference usersCollection =

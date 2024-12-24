@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mea/view/all/detail.dart';
+import 'package:mea/widget/dashboard/laporan/detail.dart';
 
 class Isilistvalid extends StatelessWidget {
   final bool valid;

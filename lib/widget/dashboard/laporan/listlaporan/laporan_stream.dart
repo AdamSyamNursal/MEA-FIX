@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mea/controller/auth/auth_controller.dart';
-import 'package:mea/widget/dashboard/listlaporan/kosong.dart';
-import 'package:mea/widget/dashboard/listlaporan/listlaporan.dart';
+import 'package:mea/widget/dashboard/laporan/listlaporan/kosong.dart';
+import 'package:mea/widget/dashboard/laporan/listlaporan/listlaporan.dart';
 
 class ReportListStream extends StatelessWidget {
   final AuthController authController;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mea/view/all/container_msg.dart';
+import 'package:mea/widget/pesan/container_msg.dart';
 
 class PesanKosong extends StatelessWidget {
   final bool isiPesan;

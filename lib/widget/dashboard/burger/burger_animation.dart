@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mea/controller/appbar/burger/container_burger.dart';
-import 'package:mea/view/all/arsip.dart';
-import 'package:mea/view/all/hubungi.dart';
-import 'package:mea/view/all/tentangaplikasi.dart';
+import 'package:mea/widget/dashboard/burger/container_burger.dart';
+import 'package:mea/widget/dashboard/arsip.dart';
+import 'package:mea/widget/dashboard/hubungi.dart';
+import 'package:mea/widget/dashboard/tentangaplikasi.dart';
 
 class Sidebar extends StatelessWidget {
   final VoidCallback onClose;

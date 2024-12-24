@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:mea/controller/rekomendasi/rekomendasi_text.dart';
+import 'package:mea/widget/dashboard/rekomendasi_button/rekomendasi_akun/rekomendasi_text.dart';
 import 'package:mea/view/all/dashboar.dart';
-import 'package:mea/view/all/editrekomendasi.dart';
+import 'package:mea/widget/dashboard/rekomendasi_button/rekomendasi_akun/editrekomendasi.dart';
 import 'package:intl/intl.dart';
 
 class Rekomendasi extends StatelessWidget {

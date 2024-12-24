@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mea/controller/pesan/PesanFilterController.dart';
+import 'package:mea/controller/arsip/PesanFilterController.dart';
 
 class DropdownBulan extends StatelessWidget {
-  final PesanFilterController controller = Get.find();
+  final FilterController controller = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class DropdownBulan extends StatelessWidget {
 }
 
 class DropdownTahun extends StatelessWidget {
-  final PesanFilterController controller = Get.find();
+  final FilterController controller = Get.find();
 
   @override
   Widget build(BuildContext context) {

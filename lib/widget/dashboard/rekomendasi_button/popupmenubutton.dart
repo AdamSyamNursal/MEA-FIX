@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mea/controller/auth/auth_controller.dart';
-import 'package:mea/widget/dashboard/rekomendasi_akun/akun.dart';
-import 'package:mea/view/all/laporan.dart';
-import 'package:mea/view/all/rekomendasi.dart';
+import 'package:mea/widget/dashboard/rekomendasi_button/akun/akun.dart';
+import 'package:mea/widget/dashboard/rekomendasi_button/laporan.dart';
+import 'package:mea/widget/dashboard/rekomendasi_button/rekomendasi_akun/rekomendasi.dart';
 
 class Popupmenubutton extends StatelessWidget {
   final AuthController authController;

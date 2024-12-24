@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:mea/controller/arsip/dropdown.dart';
-import 'package:mea/controller/pesan/PesanFilterController.dart';
+import 'package:mea/controller/arsip/PesanFilterController.dart';
 import 'package:mea/model/modelaporan.dart';
 
-class Arsip extends StatelessWidget {
-  final PesanFilterController controller = Get.put(PesanFilterController());
+class ViewLaporan extends StatelessWidget {
+  final FilterController controller = Get.put(FilterController());
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,6 @@ class Arsip extends StatelessWidget {
                         isLessThan: DateTime(
                             controller.tahunTerpilih, controller.bulanTerpilih + 1, 1),
                       )
-                      .where('arsip', isEqualTo: true) // Filter arsip == true
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
@@ -85,34 +84,13 @@ class Arsip extends StatelessWidget {
                         return Card(
                           margin: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                           child: ListTile(
-leading: GestureDetector(
-  onTap: () {
-    // Menampilkan gambar dalam mode fullscreen
-    showDialog(
-      context: context,
-      builder: (_) => Dialog(
-        child: Container(
-          child: Image.network(
-            laporan.imageUrl, // Default jika null
-            fit: BoxFit.cover,
-          ),
-        ),
-      ),
-    );
-  },
-  child: Container(
-    width: 60,
-    height: 60,
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(8.0),
-      image: DecorationImage(
-        image: NetworkImage(laporan.imageUrl), // Default jika null
-        fit: BoxFit.cover,
-      ),
-    ),
-  ),
-),
-
+                            leading: CircleAvatar(
+                              backgroundColor: laporan.valid ? Colors.green : Colors.red,
+                              child: Icon(
+                                laporan.valid ? Icons.check_circle : Icons.error,
+                                color: Colors.white,
+                              ),
+                            ),
                             title: Text(
                               laporan.keterangan,
                               style: TextStyle(fontWeight: FontWeight.bold),
@@ -124,6 +102,33 @@ leading: GestureDetector(
                                 Text("Pengirim: ${laporan.pengirim}"),
                                 Text("Tanggal: ${laporan.tanggal.toLocal()}"),
                               ],
+                            ),
+                            trailing: Switch(
+                              value: laporan.valid,
+                              onChanged: (newValue) async {
+                                try {
+                                  await FirebaseFirestore.instance
+                                      .collection('laporan')
+                                      .doc(laporan.id)
+                                      .update({'valid': newValue});
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        newValue
+                                            ? 'Laporan valid.'
+                                            : 'Laporan tidak valid.',
+                                      ),
+                                    ),
+                                  );
+                                } catch (e) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('Error updating valid status.'),
+                                    ),
+                                  );
+                                }
+                              },
                             ),
                             onTap: () {
                               // ShowDialog untuk detail laporan
@@ -146,6 +151,7 @@ leading: GestureDetector(
                                         Text("Keterangan: ${laporan.keterangan}"),
                                         Text(
                                             "Tanggal: ${laporan.tanggal.toLocal()}"),
+                                        Text("Valid: ${laporan.valid ? 'Ya' : 'Tidak'}"),
                                         Text("Pengirim: ${laporan.pengirim}"),
                                       ],
                                     ),

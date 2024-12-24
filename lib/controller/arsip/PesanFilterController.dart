@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 
-class PesanFilterController extends GetxController {
+class FilterController extends GetxController {
   var selectedBulan = ''.obs;
   var selectedTahun = ''.obs;
 

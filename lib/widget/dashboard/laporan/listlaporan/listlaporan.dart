@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mea/widget/dashboard/listlaporan/sub/isilistshort.dart';
-import 'package:mea/widget/dashboard/listlaporan/sub/isilistvalid.dart';
-import 'package:mea/widget/dashboard/listlaporan/sub/stacklaporan.dart';
+import 'package:mea/widget/dashboard/laporan/listlaporan/sub/isilistshort.dart';
+import 'package:mea/widget/dashboard/laporan/listlaporan/sub/isilistvalid.dart';
+import 'package:mea/widget/dashboard/laporan/listlaporan/sub/stacklaporan.dart';
 
 class listlaporan extends StatelessWidget {
   final List<Map<String, dynamic>> laporanList;

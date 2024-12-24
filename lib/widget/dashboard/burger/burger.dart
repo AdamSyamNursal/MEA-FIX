@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mea/controller/appbar/burger/burger_animation.dart';
+import 'package:mea/widget/dashboard/burger/burger_animation.dart';
 
 class BurgerController extends GetxController with GetSingleTickerProviderStateMixin {
   OverlayEntry? overlayEntry;

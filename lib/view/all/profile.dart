@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:mea/controller/auth/auth_controller.dart';
-import 'package:mea/view/all/editprofile.dart';
+import 'package:mea/widget/profilepage_login_register/editprofile.dart';
 import 'package:mea/view/all/login.dart';
 import 'package:mea/view/navigation_bar.dart';
+import 'package:mea/widget/profilepage_login_register/profile/profileitem.dart';
 
 class ProfilePage extends StatelessWidget {
   final String userid;
@@ -24,6 +25,7 @@ class ProfilePage extends StatelessWidget {
         child: Scaffold(
           backgroundColor: Color(0xFFFF6F00),
           appBar: AppBar(
+            automaticallyImplyLeading: false,
             backgroundColor: Color(0xFFFF6F00),
             elevation: 0,
             centerTitle: true,
@@ -79,19 +81,17 @@ class ProfilePage extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            profileItem("Nama", userData['name'] ?? 'Tidak Diketahui'),
-                            profileItem("Username", userData['username'] ?? 'Tidak Diketahui'),
-                            profileItem("Email", userData['email'] ?? 'Tidak Diketahui'),
-                            profileItem(
-                              "Role",
+                            Profileitem(title: "Nama", value : userData['name'] ?? 'Tidak Diketahui'),
+                            Profileitem(title: "Username", value : userData['username'] ?? 'Tidak Diketahui'),
+                            Profileitem(title: "Email", value : userData['email'] ?? 'Tidak Diketahui'),
+                            Profileitem(title:"Role", value: 
                               userData['acc'] == true
                                   ? (userData['role'] ?? 'Tidak Diketahui')
-                                  : 'user',
-                            ),
-                            profileItem("Nomor Handphone", userData['phoneNumber'] ?? 'Tidak Diketahui'),
-                            profileItem("Alamat", userData['address'] ?? 'Tidak Diketahui'),
-                            profileItem("Tanggal Lahir", userData['dateOfBirth'] ?? 'Tidak Diketahui'),
-                            profileItem("Tanggal Daftar", userData['registrationDate'] ?? 'Tidak Diketahui'),
+                                  : 'user',),
+                            Profileitem(title: "Nomor Handphone", value : userData['phoneNumber'] ?? 'Tidak Diketahui'),
+                            Profileitem(title: "Alamat", value : userData['address'] ?? 'Tidak Diketahui'),
+                            Profileitem(title: "Tanggal Lahir", value : userData['dateOfBirth'] ?? 'Tidak Diketahui'),
+                            Profileitem(title: "Tanggal Daftar", value : userData['registrationDate'] ?? 'Tidak Diketahui'),
                             SizedBox(height: 20),
                             ElevatedButton(
                               onPressed: authController.logoutUser,
@@ -138,32 +138,4 @@ class ProfilePage extends StatelessWidget {
     });
   }
 
-  Widget profileItem(String title, String value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFFFF6F00),
-          ),
-        ),
-        SizedBox(height: 5),
-        Container(
-          width: double.infinity,
-          padding: EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: Colors.grey[200],
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Text(
-            value,
-            style: TextStyle(fontSize: 16, color: Colors.black),
-          ),
-        ),
-      ],
-    );
-  }
 }

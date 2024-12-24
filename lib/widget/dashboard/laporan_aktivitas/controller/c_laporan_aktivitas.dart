@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mea/view/all/editlaporanaktivitas.dart';
+import 'package:mea/widget/dashboard/laporan_aktivitas/editlaporanaktivitas.dart';
 import 'package:mea/widget/dashboard/laporan_aktivitas/laporan_aktivitas.dart';
 
 class CLaporanAktivitas extends StatelessWidget {
