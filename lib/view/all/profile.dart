@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:mea/controller/auth/auth_controller.dart';
+import 'package:mea/view/all/editprofile.dart';
 import 'package:mea/view/all/login.dart';
 import 'package:mea/view/navigation_bar.dart';
 
@@ -22,6 +23,31 @@ class ProfilePage extends StatelessWidget {
       return SafeArea(
         child: Scaffold(
           backgroundColor: Color(0xFFFF6F00),
+          appBar: AppBar(
+            backgroundColor: Color(0xFFFF6F00),
+            elevation: 0,
+            centerTitle: true,
+            title: Text(
+              "Profile",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                fontSize: 20,
+              ),
+            ),
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () => Get.back(),
+            ),
+            actions: [
+              IconButton(
+                icon: Icon(Icons.edit, color: Colors.white),
+                onPressed: () {
+                  Get.to(() => EditProfilePage(userid: userid));
+                },
+              ),
+            ],
+          ),
           body: StreamBuilder<DocumentSnapshot>(
             stream: FirebaseFirestore.instance.collection('users').doc(userid).snapshots(),
             builder: (context, snapshot) {
@@ -41,29 +67,6 @@ class ProfilePage extends StatelessWidget {
 
               return Column(
                 children: [
-                  SizedBox(height: 56),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Center(
-                            child: Text(
-                              "Profile",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                                fontSize: 20,
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 27),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 10),
                   Expanded(
                     child: Container(
                       width: double.infinity,
@@ -93,25 +96,25 @@ class ProfilePage extends StatelessWidget {
                             ElevatedButton(
                               onPressed: authController.logoutUser,
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xFFFF6F00), // Warna tombol
-                                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 30), // Padding lebih lebar
+                                backgroundColor: Color(0xFFFF6F00),
+                                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 30),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30), // Tombol dengan sudut melengkung
+                                  borderRadius: BorderRadius.circular(30),
                                 ),
-                                shadowColor: Colors.black.withOpacity(0.2), // Bayangan tombol
-                                elevation: 6, // Efek elevasi tombol
+                                shadowColor: Colors.black.withOpacity(0.2),
+                                elevation: 6,
                               ),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center, // Memastikan teks ada di tengah
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(Icons.logout, color: Colors.white), // Ikon logout
-                                  SizedBox(width: 10), // Jarak antara ikon dan teks
+                                  Icon(Icons.logout, color: Colors.white),
+                                  SizedBox(width: 10),
                                   Text(
                                     "Logout",
                                     style: TextStyle(
-                                      fontSize: 18, // Ukuran teks lebih besar
+                                      fontSize: 18,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.white, // Warna teks
+                                      color: Colors.white,
                                     ),
                                   ),
                                 ],
@@ -128,7 +131,7 @@ class ProfilePage extends StatelessWidget {
           ),
           bottomNavigationBar: CustomNavigationBar(
             authController: authController,
-            currentIndex: 3, // Tab ke-3 untuk Profile
+            currentIndex: 3,
           ),
         ),
       );

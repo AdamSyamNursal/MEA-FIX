@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:mea/controller/level.dart';
-import 'package:mea/controller/list/kosong.dart';
-import 'package:mea/controller/list/listlaporan.dart';
+
 import 'package:mea/controller/appbar/burger/burger.dart';
 import 'package:mea/controller/auth/auth_controller.dart';
-import 'package:mea/view/all/akun.dart';
+import 'package:mea/widget/dashboard/rekomendasi_akun/akun.dart';
 import 'package:mea/view/all/laporan.dart';
-import 'package:mea/view/all/laporan_aktivitas.dart';
+import 'package:mea/widget/dashboard/laporan_aktivitas/laporan_aktivitas.dart';
 import 'package:mea/view/all/rekomendasi.dart';
 import 'package:mea/view/navigation_bar.dart';
+import 'package:mea/widget/dashboard/listlaporan/laporan_stream.dart';
+import 'package:mea/widget/dashboard/level/level_controller.dart';
+import 'package:mea/widget/dashboard/level/level_dropdown.dart';
+import 'package:mea/widget/dashboard/rekomendasi_akun/popupmenubutton.dart';
 
 class dashboard extends StatelessWidget {
   final AuthController authController = Get.find<AuthController>();
@@ -20,42 +23,7 @@ class dashboard extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: Text("Pilih Level"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                title: Text("Level 1 (Normal)"),
-                onTap: () {
-                  levelController.setLevel(1);
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: Text("Level 2 (Waspada)"),
-                onTap: () {
-                  levelController.setLevel(2);
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: Text("Level 3 (Siaga)"),
-                onTap: () {
-                  levelController.setLevel(3);
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: Text("Level 4 (Awas)"),
-                onTap: () {
-                  levelController.setLevel(4);
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ),
-        );
+        return LevelDropdown(levelController: levelController);
       },
     );
   }
@@ -71,47 +39,7 @@ class dashboard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Burger(),
-              PopupMenuButton<String>(
-                onSelected: (String value) {
-                  if (value == "Rekomendasi") {
-                    Get.to(() => Rekomendasi(
-                          role: authController.role,
-                          acc: authController.acc,
-                        ));
-                  }
-                  if (value == "Laporan") {
-                    Get.to(() => ViewLaporan());
-                  }
-                  if (value == "Akun") {
-                    Get.to(() => UserListView());
-                  }
-                },
-                itemBuilder: (BuildContext context) {
-                  if (authController.role == "BPBD" && authController.acc) {
-                    return [
-                      PopupMenuItem(
-                        value: "Laporan",
-                        child: Text("Laporan"),
-                      ),
-                      PopupMenuItem(
-                        value: "Akun",
-                        child: Text("Akun"),
-                      ),
-                      PopupMenuItem(
-                        value: "Rekomendasi",
-                        child: Text("Rekomendasi"),
-                      ),
-                    ];
-                  } else {
-                    return [
-                      PopupMenuItem(
-                        value: "Rekomendasi",
-                        child: Text("Rekomendasi"),
-                      ),
-                    ];
-                  }
-                },
-              )
+              Popupmenubutton(authController: authController)
             ],
           ),
         ),
@@ -188,36 +116,7 @@ class dashboard extends StatelessWidget {
                         ),
                         SizedBox(height: 10),
                         Expanded(
-                          child: StreamBuilder<QuerySnapshot>(
-                            stream: FirebaseFirestore.instance
-                                .collection('laporan')
-                                .where('arsip', isEqualTo: false)
-                                .orderBy('tanggal', descending: true)
-                                .snapshots(),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                return Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              }
-
-                              if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                                return Kosong(
-                                  isilist: false,
-                                  content: Container(),
-                                );
-                              }
-
-                              final laporanList = snapshot.data!.docs.map((doc) {
-                                return doc.data() as Map<String, dynamic>;
-                              }).toList();
-
-                              return Kosong(
-                                isilist: true,
-                                content: listlaporan(laporanList: laporanList, acc: authController.acc, akses: authController.role),
-                              );
-                            },
-                          ),
+                          child: ReportListStream(authController: authController),
                         ),
                       ],
                     ),
@@ -228,44 +127,10 @@ class dashboard extends StatelessWidget {
           ],
         ),
         bottomNavigationBar: CustomNavigationBar(
-  authController: Get.find<AuthController>(),
-  currentIndex: 0, // Set tab pertama sebagai aktif
-),
+          authController: Get.find<AuthController>(),
+          currentIndex: 0, // Set tab pertama sebagai aktif
+        ),
       ),
     );
-  }
-}
-
-class LevelController extends GetxController {
-  var selectedLevel = 1.obs;
-
-  @override
-  void onInit() {
-    super.onInit();
-    FirebaseFirestore.instance
-        .collection('settings')
-        .doc('level')
-        .snapshots()
-        .listen((snapshot) {
-      if (snapshot.exists) {
-        selectedLevel.value = snapshot['level'] ?? 1;
-      }
-    });
-  }
-
-  void setLevel(int level) {
-    selectedLevel.value = level;
-    _saveLevelToFirebase(level);
-  }
-
-  Future<void> _saveLevelToFirebase(int level) async {
-    try {
-      await FirebaseFirestore.instance.collection('settings').doc('level').set({
-        'level': level,
-        'timestamp': FieldValue.serverTimestamp(),
-      });
-    } catch (e) {
-      print('Error saving level to Firebase: $e');
-    }
   }
 }

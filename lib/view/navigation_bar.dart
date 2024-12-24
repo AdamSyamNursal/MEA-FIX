@@ -25,7 +25,7 @@ class CustomNavigationBar extends StatelessWidget {
         if (index != currentIndex) {
           switch (index) {
             case 0:
-              Get.offAll(() => dashboard()); // OffAll untuk reset stack navigasi
+              Get.to(() => dashboard()); // OffAll untuk reset stack navigasi
               break;
                   case 1:
                     if (authController.isLoggedIn.value) {

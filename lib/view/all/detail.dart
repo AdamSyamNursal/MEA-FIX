@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mea/controller/list/detail/deskripsiinformasi.dart';
-import 'package:mea/controller/list/detail/detaillokasi.dart';
-import 'package:mea/controller/list/detail/maps.dart';
-import 'package:mea/controller/list/detail/validdetail.dart';
-import 'package:mea/controller/list/sub/stacklaporan.dart';
+import 'package:mea/widget/dashboard/listlaporan/detail/deskripsiinformasi.dart';
+import 'package:mea/widget/dashboard/listlaporan/detail/detaillokasi.dart';
+import 'package:mea/widget/dashboard/listlaporan/detail/maps.dart';
+import 'package:mea/widget/dashboard/listlaporan/detail/validdetail.dart';
+import 'package:mea/widget/dashboard/listlaporan/sub/stacklaporan.dart';
 
 class Detail extends StatelessWidget {
   final String idLaporan;

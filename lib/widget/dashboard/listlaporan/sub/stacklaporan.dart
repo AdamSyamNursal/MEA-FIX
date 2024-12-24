@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:mea/controller/list/sub/lokasigambar.dart';
-import 'package:mea/controller/list/sub/rolepengirim.dart';
+import 'package:mea/widget/dashboard/listlaporan/sub/lokasigambar.dart';
+import 'package:mea/widget/dashboard/listlaporan/sub/rolepengirim.dart';
 
 class gambarstack extends StatelessWidget {
   final String? gambar; // Mengizinkan nilai null

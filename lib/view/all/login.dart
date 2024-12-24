@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mea/controller/auth/auth_controller.dart';
 import 'package:mea/view/all/dashboar.dart';
+import 'package:mea/view/all/forgetpassword.dart';
 import 'package:mea/view/all/register.dart';
 import 'package:mea/view/navigation_bar.dart';
 import 'package:crypto/crypto.dart'; // Import untuk hashing
@@ -80,16 +81,6 @@ class Login extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      Get.to(() => dashboard());
-                    },
-                    child: Icon(
-                      Icons.keyboard_backspace_rounded,
-                      color: Colors.white,
-                      size: 27,
-                    ),
-                  ),
                   Text(
                     "Login",
                     style: TextStyle(
@@ -143,26 +134,39 @@ class Login extends StatelessWidget {
                       SizedBox(height: 20),
 
                       // Password Field
-                      Obx(() => TextField(
-                            controller: controller.passwordController,
-                            obscureText: controller.obscureText.value,
-                            decoration: InputDecoration(
-                              hintText: "Password",
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              filled: true,
-                              fillColor: Colors.grey[200],
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  controller.obscureText.value
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
+
+                      Column(
+                        children: [
+                          Obx(() => TextField(
+                                controller: controller.passwordController,
+                                obscureText: controller.obscureText.value,
+                                decoration: InputDecoration(
+                                  hintText: "Password",
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  filled: true,
+                                  fillColor: Colors.grey[200],
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      controller.obscureText.value
+                                          ? Icons.visibility_off
+                                          : Icons.visibility,
+                                    ),
+                                    onPressed: controller.togglePasswordVisibility,
+                                  ),
                                 ),
-                                onPressed: controller.togglePasswordVisibility,
-                              ),
-                            ),
-                          )),
+                              )),
+                          
+                          Align(
+                            alignment: Alignment.topLeft,
+                            child: 
+                            TextButton(onPressed: (){
+                              Get.to(() => ForgotPasswordView());
+                            }, child: Text("Lupa Password")),
+                          )
+                        ],
+                      ),
                       SizedBox(height: 30),
 
                       // Login Button
