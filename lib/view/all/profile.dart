@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:mea/controller/auth/auth_controller.dart';
-import 'package:mea/view/all/dashboar.dart';
 import 'package:mea/view/all/login.dart';
 import 'package:mea/view/navigation_bar.dart';
 
