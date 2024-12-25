@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:mea/controller/auth/auth_controller.dart';
 import 'package:mea/view/all/dashboar.dart';
 import 'package:mea/view/all/splash.dart';
+import 'package:mea/view/all/login.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,31 +17,28 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: authController.checkLoginStatus(), // Cek status login
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return MaterialApp(
-            home: Scaffold(
-              body: Center(child: CircularProgressIndicator()), // Loader
-            ),
-          );
-        }
-        return GetMaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'My App',
-          theme: ThemeData(
-            primarySwatch: Colors.orange,
-          ),
-          home: Obx(() {
-            // Cek status login dan navigasi
-            return authController.isLoggedIn.value
-                ? dashboard() // Navigasi menggunakan userId
-                : SplashScreen();
-          }),
-        );
-      },
+    return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'My App',
+      theme: ThemeData(
+        primarySwatch: Colors.orange,
+      ),
+      home: FutureBuilder(
+        future: authController.checkLoginStatus(), // Periksa status login
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            // Tampilkan splash screen saat memeriksa status login
+            return SplashScreen();
+          } else {
+            return Obx(() {
+              // Tampilkan halaman sesuai status login
+              return authController.isLoggedIn.value
+                  ? dashboard() // Jika login, ke dashboard
+                  : dashboard(); // Jika tidak login, ke login screen
+            });
+          }
+        },
+      ),
     );
   }
 }
-  

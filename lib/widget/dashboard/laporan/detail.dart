@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mea/widget/dashboard/laporan/listlaporan/detail/deskripsiinformasi.dart';
-import 'package:mea/widget/dashboard/laporan/listlaporan/detail/detaillokasi.dart';
 import 'package:mea/widget/dashboard/laporan/listlaporan/detail/maps.dart';
+import 'package:mea/widget/dashboard/laporan/listlaporan/detail/detaillokasi.dart';
+import 'package:mea/widget/dashboard/laporan/listlaporan/detail/deskripsiinformasi.dart';
 import 'package:mea/widget/dashboard/laporan/listlaporan/detail/validdetail.dart';
-import 'package:mea/widget/dashboard/laporan/listlaporan/sub/stacklaporan.dart';
 
 class Detail extends StatelessWidget {
   final String idLaporan;
@@ -84,17 +83,54 @@ class Detail extends StatelessWidget {
                       child: Column(
                         children: [
                           SizedBox(height: 10),
-                          gambarstack(
-                            role: data['role'] ?? '',
-                            acc: data['acc'] ?? false,
-                            gambar: data['imageUrl'] ?? '',
-                            kecamatan: data['kecamatan'],
-                            kelurahan: data['kelurahan'],
-                            time: data['tanggal'],
-                            laporanId: data['id'],
-                            akses: akses,
-                            
+                          Stack(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => FullScreenImage(
+                                        imageUrl: data['imageUrl'] ?? '',
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  height: 200, // Ukuran gambar diperkecil
+                                  width: double.infinity,
+                                  margin: EdgeInsets.symmetric(horizontal: 16),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
+                                    image: DecorationImage(
+                                      image: NetworkImage(data['imageUrl'] ?? ''),
+                                      fit: BoxFit.cover, // Sesuaikan untuk memastikan gambar terlihat proporsional
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                top: 8,
+                                left: 30,
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withOpacity(0.5),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Text(
+                                    "Gambar",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
+                          SizedBox(height: 10),
                           maps(
                             latitude: data['latitude'] ?? 0.0,
                             longtitude: data['longtitude'] ?? 0.0,
@@ -103,7 +139,7 @@ class Detail extends StatelessWidget {
                           detaillokasi(
                             id: data['id'] ?? 'Alamat tidak tersedia',
                           ),
-                          SizedBox(height: 5),
+                          SizedBox(height: 20),
                           deskripsilokasi(
                             id: data['id'] ?? 'Deskripsi tidak tersedia',
                           ),
@@ -120,6 +156,28 @@ class Detail extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class FullScreenImage extends StatelessWidget {
+  final String imageUrl;
+
+  FullScreenImage({required this.imageUrl});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        iconTheme: IconThemeData(color: Colors.white),
+      ),
+      body: Center(
+        child: InteractiveViewer(
+          child: Image.network(imageUrl),
         ),
       ),
     );

@@ -40,7 +40,7 @@ class detaillokasi extends StatelessWidget {
               SizedBox(height: 5),
               Container(
                 width: 320,
-                height: 180,
+                height: 100,
                 padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -58,11 +58,11 @@ class detaillokasi extends StatelessWidget {
                         text: "${data['nama_jalan'] ?? 'Tidak tersedia'}\n",
                       ),
                       TextSpan(
-                        text: "Kelurahan: ",
+                        text: "Jorong: ",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       TextSpan(
-                        text: "${data['kelurahan'] ?? 'Tidak tersedia'}\n",
+                        text: "${data['jorong'] ?? 'Tidak tersedia'}\n",
                       ),
                       TextSpan(
                         text: "Kecamatan: ",
@@ -72,25 +72,11 @@ class detaillokasi extends StatelessWidget {
                         text: "${data['kecamatan'] ?? 'Tidak tersedia'}\n",
                       ),
                       TextSpan(
-                        text: "Kota: ",
+                        text: "Kabupaten: ",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       TextSpan(
-                        text: "${data['kota'] ?? 'Tidak tersedia'}\n",
-                      ),
-                      TextSpan(
-                        text: "Provinsi: ",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      TextSpan(
-                        text: "${data['provinsi'] ?? 'Tidak tersedia'}\n",
-                      ),
-                      TextSpan(
-                        text: "Kode Pos: ",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      TextSpan(
-                        text: "${data['kode_pos'] ?? 'Tidak tersedia'}",
+                        text: "${data['kabupaten'] ?? 'Tidak tersedia'}\n",
                       ),
                     ],
                   ),

@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 class lokasigambar extends StatelessWidget {
   final String kecamatan;
-  final String kelurahan;
+  final String jorong;
   final Timestamp time;
 
   lokasigambar({
     required this.kecamatan,
-    required this.kelurahan,
+    required this.jorong,
     required this.time,
   });
 
@@ -46,7 +46,7 @@ class lokasigambar extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "$kelurahan, $kecamatan",
+                  "$jorong, $kecamatan",
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,

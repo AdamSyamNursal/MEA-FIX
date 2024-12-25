@@ -141,11 +141,9 @@ class ViewLaporan extends StatelessWidget {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text("Nama Jalan: ${laporan.namaJalan}"),
-                                        Text("Kelurahan: ${laporan.kelurahan}"),
+                                        Text("Jorong: ${laporan.jorong}"),
                                         Text("Kecamatan: ${laporan.kecamatan}"),
-                                        Text("Kota: ${laporan.kota}"),
-                                        Text("Provinsi: ${laporan.provinsi}"),
-                                        Text("Kode Pos: ${laporan.kodePos}"),
+                                        Text("Kabupaten: ${laporan.kabupaten}"),
                                         Text("User ID: ${laporan.userId}"),
                                         Text("Role: ${laporan.role}"),
                                         Text("Keterangan: ${laporan.keterangan}"),

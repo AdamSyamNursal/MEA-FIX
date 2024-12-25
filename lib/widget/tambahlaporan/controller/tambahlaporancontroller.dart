@@ -10,16 +10,13 @@ import 'package:image_picker/image_picker.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mea/model/modelaporan.dart';
 
+
 class TambahLaporanController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
   final namaJalanController = TextEditingController();
-  final kelurahanController = TextEditingController();
-  final kecamatanController = TextEditingController();
-  final kotaController = TextEditingController();
-  final provinsiController = TextEditingController();
-  final kodePosController = TextEditingController();
+  final jorongController = TextEditingController();
   final alamatController = TextEditingController();
   final keteranganController = TextEditingController();
   final pengirimController = TextEditingController();
@@ -27,6 +24,8 @@ class TambahLaporanController extends GetxController {
   Rx<File?> selectedImage = Rx<File?>(null);
   Rx<LatLng?> currentPosition = Rx<LatLng?>(null);
   RxBool isFormValid = false.obs;
+  RxString selectedKabupaten = "".obs;
+  RxString selectedKecamatan = "".obs;
 
   void updateLocation(LatLng position) {
     currentPosition.value = position;
@@ -36,11 +35,9 @@ class TambahLaporanController extends GetxController {
   void _validateForm() {
     isFormValid.value =
         namaJalanController.text.isNotEmpty &&
-        kelurahanController.text.isNotEmpty &&
-        kecamatanController.text.isNotEmpty &&
-        kotaController.text.isNotEmpty &&
-        provinsiController.text.isNotEmpty &&
-        kodePosController.text.isNotEmpty &&
+        jorongController.text.isNotEmpty &&
+        selectedKabupaten.value.isNotEmpty &&
+        selectedKecamatan.value.isNotEmpty &&
         alamatController.text.isNotEmpty &&
         keteranganController.text.isNotEmpty &&
         pengirimController.text.isNotEmpty;
@@ -147,11 +144,9 @@ class TambahLaporanController extends GetxController {
       final laporan = Laporan(
         id: '',
         namaJalan: namaJalanController.text.trim(),
-        kelurahan: kelurahanController.text.trim(),
-        kecamatan: kecamatanController.text.trim(),
-        kota: kotaController.text.trim(),
-        provinsi: provinsiController.text.trim(),
-        kodePos: kodePosController.text.trim(),
+        jorong: jorongController.text.trim(),
+        kecamatan: selectedKecamatan.value.trim(),
+        kabupaten: selectedKabupaten.value.trim(),
         userId: userId,
         role: role,
         alamat: alamatController.text.trim(),
@@ -182,11 +177,9 @@ class TambahLaporanController extends GetxController {
 
   void resetFields() {
     namaJalanController.clear();
-    kelurahanController.clear();
-    kecamatanController.clear();
-    kotaController.clear();
-    provinsiController.clear();
-    kodePosController.clear();
+    jorongController.clear();
+    selectedKecamatan.value = "";
+    selectedKabupaten.value = "";
     alamatController.clear();
     keteranganController.clear();
     pengirimController.clear();

@@ -6,7 +6,7 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Navigasi otomatis setelah 2 detik
-    Future.delayed(Duration(seconds: 2), () {
+    Future.delayed(Duration(seconds: 5), () {
       Get.off(() => dashboard()); // Menggunakan Get.off agar halaman splash tidak dapat kembali
     });
 

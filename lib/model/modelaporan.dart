@@ -3,11 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Laporan {
   final String id; // ID dokumen Firestore
   final String namaJalan;
-  final String kelurahan;
+  final String jorong;
   final String kecamatan;
-  final String kota;
-  final String provinsi;
-  final String kodePos;
+  final String kabupaten;
   final String userId; // ID pengguna yang membuat laporan
   final String role; // Role pengguna
   final String alamat;
@@ -23,11 +21,9 @@ class Laporan {
   Laporan({
     required this.id,
     required this.namaJalan,
-    required this.kelurahan,
+    required this.jorong,
     required this.kecamatan,
-    required this.kota,
-    required this.provinsi,
-    required this.kodePos,
+    required this.kabupaten,
     required this.userId,
     required this.role,
     required this.alamat,
@@ -46,11 +42,9 @@ class Laporan {
     return Laporan(
       id: id,
       namaJalan: json['nama_jalan'] ?? '',
-      kelurahan: json['kelurahan'] ?? '',
+      jorong: json['jorong'] ?? '',
       kecamatan: json['kecamatan'] ?? '',
-      kota: json['kota'] ?? '',
-      provinsi: json['provinsi'] ?? '',
-      kodePos: json['kode_pos'] ?? '',
+      kabupaten: json['kabupaten'] ?? '',
       userId: json['user_id'] ?? '',
       role: json['role'] ?? '',
       alamat: json['alamat'] ?? '',
@@ -69,11 +63,9 @@ imageUrl: json['imageUrl'] ?? '',
   Map<String, dynamic> toJson() {
     return {
       'nama_jalan': namaJalan,
-      'kelurahan': kelurahan,
+      'jorong': jorong,
       'kecamatan': kecamatan,
-      'kota': kota,
-      'provinsi': provinsi,
-      'kode_pos': kodePos,
+      'kabupaten' : kabupaten,
       'user_id': userId,
       'role': role,
       'alamat': alamat,

@@ -4,7 +4,9 @@ import 'package:mea/controller/auth/auth_controller.dart';
 import 'package:mea/widget/dashboard/laporan/listlaporan/map/mapcontroller.dart';
 import 'package:mea/view/navigation_bar.dart';
 import 'package:mea/widget/tambahlaporan/buildtexfield.dart';
+import 'package:mea/widget/tambahlaporan/controller/kabupaten_kecamatan.dart';
 import 'package:mea/widget/tambahlaporan/controller/tambahlaporancontroller.dart';
+import 'package:mea/widget/tambahlaporan/kabupaten_dropdown.dart';
 
 class TambahLaporanView extends StatelessWidget {
   final String userId;
@@ -47,16 +49,13 @@ class TambahLaporanView extends StatelessWidget {
                     children: [
                       MapController(onLocationChanged: controller.updateLocation),
                       SizedBox(height: 10),
+                      KabupatenDropdown(kabupatenKecamatanSumbar: kabupatenKecamatanSumbar, selectedKabupaten: controller.selectedKabupaten, selectedKecamatan: controller.selectedKecamatan),
                       BuildTextField(label: "Nama Jalan", controller: controller.namaJalanController),
-                      BuildTextField(label: "Kelurahan", controller: controller.kelurahanController),
-                      BuildTextField(label: "Kecamatan", controller: controller.kecamatanController),
-                      BuildTextField(label: "Kota", controller: controller.kotaController),
-                      BuildTextField(label: "Provinsi", controller: controller.provinsiController),
-                      BuildTextField(label: "Kode Pos", controller: controller.kodePosController),
+                      BuildTextField(label: "Jorong", controller: controller.jorongController),
                       SizedBox(height: 10),
                       BuildTextField(label: "Pengirim", controller: controller.pengirimController),
                       SizedBox(height: 10),
-                      BuildTextField(label: "Alamat", controller: controller.alamatController),
+                      BuildTextField(label: "Alamat Pengirim", controller: controller.alamatController),
                       SizedBox(height: 10),
                       BuildTextField(
                         label: "Keterangan",

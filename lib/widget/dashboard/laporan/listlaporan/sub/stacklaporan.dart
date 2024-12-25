@@ -8,7 +8,7 @@ class gambarstack extends StatelessWidget {
   final String role;
   final bool acc;
   final String kecamatan;
-  final String kelurahan;
+  final String jorong;
   final Timestamp time;
   final String laporanId; // ID laporan untuk akses hapus
   final String akses;
@@ -19,7 +19,7 @@ class gambarstack extends StatelessWidget {
     required this.acc,
     this.gambar,
     required this.kecamatan,
-    required this.kelurahan,
+    required this.jorong,
     required this.time,
     required this.laporanId,
     required this.akses,
@@ -117,7 +117,7 @@ class gambarstack extends StatelessWidget {
         // Informasi lokasi
         lokasigambar(
           kecamatan: kecamatan,
-          kelurahan: kelurahan,
+          jorong: jorong,
           time: time,
         ),
         // Informasi role pengirim
