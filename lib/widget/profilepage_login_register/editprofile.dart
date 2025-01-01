@@ -20,7 +20,10 @@ class EditProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Edit Profile"),
+          iconTheme: IconThemeData(
+        color: Colors.white, // Ganti warna ikon back sesuai kebutuhan
+        ),
+        title: Text("Edit Profile", style: TextStyle(color: Colors.white),),
         backgroundColor: Color(0xFFFF6F00),
       ),
       body: SingleChildScrollView(
@@ -128,7 +131,7 @@ class EditProfilePage extends StatelessWidget {
                               colorText: Colors.white);
                         }
                       },
-                      child: Text("Save Changes"),
+                      child: Text("Simpan Perubahan", style: TextStyle(color: Colors.white),),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xFFFF6F00),
                         minimumSize: Size(200, 45),

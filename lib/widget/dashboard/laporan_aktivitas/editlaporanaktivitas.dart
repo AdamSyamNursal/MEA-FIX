@@ -16,7 +16,7 @@ class EditLaporanAktivitas extends StatelessWidget {
         backgroundColor: Color(0xFFFF6F00),
         body: Column(
           children: [
-            SizedBox(height: 56),
+            SizedBox(height: 10),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 17.0),
               child: Row(

@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 class Rekomendasi extends StatelessWidget {
   final String role;
   final bool acc;
+
   Rekomendasi({required this.role, required this.acc});
 
   String formatDate(Timestamp timestamp) {
@@ -20,7 +21,7 @@ class Rekomendasi extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Color(0xFFFF6F00),
+        backgroundColor: const Color(0xFFFF6F00),
         body: FutureBuilder<DocumentSnapshot>(
           future: FirebaseFirestore.instance
               .collection('recommendations')
@@ -30,11 +31,11 @@ class Rekomendasi extends StatelessWidget {
               .then((snapshot) => snapshot.docs.first),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             }
 
             if (snapshot.hasError) {
-              return Center(
+              return const Center(
                 child: Text(
                   "Error loading recommendations",
                   style: TextStyle(color: Colors.red),
@@ -43,7 +44,7 @@ class Rekomendasi extends StatelessWidget {
             }
 
             if (!snapshot.hasData || !snapshot.data!.exists) {
-              return Center(
+              return const Center(
                 child: Text("No recommendations available"),
               );
             }
@@ -51,97 +52,83 @@ class Rekomendasi extends StatelessWidget {
             // Retrieve the timestamp from Firebase
             Timestamp timestamp = snapshot.data!.get('timestamp');
 
-            return Container(
-              child: Column(
-                children: [
-                  SizedBox(height: 56),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
+            return Column(
+              children: [
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      GestureDetector(
+                        onTap: () => Get.to(() => dashboard()),
+                        child: const Icon(Icons.arrow_back_rounded, color: Colors.white),
+                      ),
+                      const Text(
+                        "Rekomendasi",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                      ),
+                      if (role == "BPBD" && acc)
                         GestureDetector(
-                          onTap: () => Get.to(() => dashboard()),
+                          onTap: () => Get.to(() => ViewEdit()),
                           child: Container(
-                            child: Icon(Icons.arrow_back_rounded, color: Colors.white),
-                          ),
-                        ),
-                        Container(
-                          child: Center(
-                            child: Text(
-                              "Rekomendasi",
+                            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: const Text(
+                              "Edit",
                               style: TextStyle(
+                                color: Color(0xFFFF6F00),
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                                fontSize: 20,
                               ),
                             ),
                           ),
-                        ),
-                        if (role == "BPBD" && acc)
-                          GestureDetector(
-                            onTap: () => Get.to(() => ViewEdit()),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: Text(
-                                "Edit",
-                                style: TextStyle(
-                                  color: Color(0xFFFF6F00),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          )
-                        else
-                          SizedBox(width: 10), // Tambahkan widget valid
-                      ],
-                    ),
+                        )
+                      else
+                        const SizedBox(width: 10),
+                    ],
                   ),
-                  SizedBox(height: 10),
-                  Expanded(
-                    child: Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            SizedBox(height: 10),
-                            Align(
-                              alignment: Alignment.center,
-                              child: Text(
-                                formatDate(timestamp),
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                ),
+                const SizedBox(height: 10),
+                Expanded(
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 10),
+                          Text(
+                            formatDate(timestamp),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
                             ),
-                            SizedBox(height: 10),
-                            Align(
-                              alignment: Alignment.center,
-                              child: Image.asset(
-                                "assets/images/BPBD.png",
-                                height: 80,
-                                width: 80,
-                              ),
-                            ),
-                            SizedBox(height: 20),
-                            RekomendasiText(), // Menggunakan widget RekomendasiText yang telah dipisahkan
-                          ],
-                        ),
+                          ),
+                          const SizedBox(height: 10),
+                          Image.asset(
+                            "assets/images/BPBD.png",
+                            height: 80,
+                            width: 80,
+                          ),
+                          const SizedBox(height: 20),
+                          RekomendasiText(), // Menggunakan widget RekomendasiText
+                        ],
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             );
           },
         ),

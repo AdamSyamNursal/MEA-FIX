@@ -54,7 +54,10 @@ class ViewEdit extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Edit Recommendations"),
+          iconTheme: IconThemeData(
+    color: Colors.white, // Ganti warna ikon back sesuai kebutuhan
+  ),
+        title: Text("Edit Recommendations", style:  TextStyle(color: Colors.white),),
         backgroundColor: Color(0xFFFF6F00),
       ),
       body: Padding(
@@ -85,15 +88,15 @@ class ViewEdit extends StatelessWidget {
               children: [
                 ElevatedButton.icon(
                   onPressed: controller.addRecommendationField,
-                  icon: Icon(Icons.add),
-                  label: Text("Add More"),
+                  icon: Icon(Icons.add, color: Colors.white,),
+                  label: Text("Add More",style: TextStyle(color: Colors.white),),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFFF6F00),
                   ),
                 ),
                 ElevatedButton(
                   onPressed: controller.saveRecommendationsToFirebase,
-                  child: Text("Save"),
+                  child: Text("Save", style: TextStyle(color: Colors.white),),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
                   ),

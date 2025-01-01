@@ -32,6 +32,9 @@ class dashboard extends StatelessWidget {
         backgroundColor: Color(0xFFFF6F00),
         appBar: AppBar(
           automaticallyImplyLeading: false,
+            iconTheme: IconThemeData(
+    color: Colors.white, // Ganti warna ikon back sesuai kebutuhan
+  ),
           backgroundColor: Color(0xFFFF6F00),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

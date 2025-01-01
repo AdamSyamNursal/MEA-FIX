@@ -9,13 +9,16 @@ class Register extends StatelessWidget {
 Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+          iconTheme: IconThemeData(
+    color: Colors.white, // Ganti warna ikon back sesuai kebutuhan
+  ),
         backgroundColor: Color(0xFFFF6F00),
         title: Text(
-          "Register",
+          "Buat Akun Baru",
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 24,
+            color: Colors.white
           ),
         ),
         centerTitle: true,
@@ -42,18 +45,6 @@ Widget build(BuildContext context) {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Title
-                      Text(
-                        "Buat Akun Baru",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: Color(0xFFFF6F00),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-
-                      // Input Fields
                       _buildInputField(
                         controller: controller.nameController,
                         label: "Nama Lengkap",

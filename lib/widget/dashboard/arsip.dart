@@ -12,7 +12,10 @@ class Arsip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Daftar Laporan"),
+          iconTheme: IconThemeData(
+    color: Colors.white, // Ganti warna ikon back sesuai kebutuhan
+  ),
+        title: Text("Daftar Laporan", style: TextStyle(color: Colors.white),),
         backgroundColor: Color(0xFFFF6F00),
       ),
       body: Column(

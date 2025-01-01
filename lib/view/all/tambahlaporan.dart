@@ -28,6 +28,7 @@ class TambahLaporanView extends StatelessWidget {
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 20,
+              color: Colors.white
             ),
           ),
           centerTitle: true,

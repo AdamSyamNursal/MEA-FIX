@@ -16,7 +16,10 @@ class UserListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Daftar Pengguna'),
+        title: Text('Daftar Pengguna', style: TextStyle(color: Colors.white),),
+          iconTheme: IconThemeData(
+    color: Colors.white, // Ganti warna ikon back sesuai kebutuhan
+  ),
         backgroundColor: Color(0xFFFF6F00)
       ),
       body: StreamBuilder<QuerySnapshot>(

@@ -166,7 +166,7 @@ MarkerLayer(
             ElevatedButton.icon(
               onPressed: _openFullScreenMap,
               icon: const Icon(Icons.fullscreen, color: Colors.white,),
-              label: const Text('Peta Layar Penuh'),
+              label: const Text('Peta Layar Penuh', style: TextStyle(color: Colors.white),),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFFFF6F00)
               ),

@@ -31,6 +31,9 @@ class DetailPesan extends GetView<DetailPesanController> {
           "Detail Pesan",
           style: TextStyle(color: Colors.white),
         ),
+          iconTheme: IconThemeData(
+    color: Colors.white, // Ganti warna ikon back sesuai kebutuhan
+  ),
         backgroundColor: const Color(0xFFFF6F00),
       ),
       body: SingleChildScrollView(
@@ -99,7 +102,7 @@ class DetailPesan extends GetView<DetailPesanController> {
                   const SizedBox(height: 16),
                   Text(
                     "Tanggal: ${pesan.timestamp.day}/${pesan.timestamp.month}/${pesan.timestamp.year}",
-                    style: const TextStyle(fontSize: 14, color: Colors.grey),
+                    style: const TextStyle(fontSize: 14, color: Colors.white),
                   ),
                 ],
               ),
